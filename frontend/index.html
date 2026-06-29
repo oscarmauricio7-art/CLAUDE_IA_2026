@@ -3,426 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todocontenedor — Dashboard</title>
+    <title>Todocontenedor — Logistics Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
     <link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
     <style>
-        :root {
-            --bg:#f5f5f7; --card:#fff; --sidebar:#111114; --text:#1d1d1f;
-            --t2:#86868b; --t3:#a1a1a6; --tl:#f5f5f7;
-            --accent:#0071e3; --green:#34c759; --orange:#ff9f0a;
-            --red:#ff3b30; --purple:#af52de; --teal:#5ac8fa; --yellow:#ffd60a;
-            --border:rgba(0,0,0,0.06); --r:14px; --rs:10px;
-            --shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.06);
-            --sw:260px; --font:'Montserrat',sans-serif;
-        }
-        @media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--text:#f5f5f7;--t2:#a1a1a6;--border:rgba(255,255,255,0.08);}}
-        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-        .app{display:flex;min-height:100vh}
-
-        /* SIDEBAR */
-        .sb{width:var(--sw);background:var(--sidebar);color:var(--tl);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;overflow-y:auto}
-        .sb-brand{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px}
-        .sb-brand img{width:40px;height:40px;border-radius:10px;object-fit:cover}
-        .sb-brand h2{font-size:14px;font-weight:800;letter-spacing:-0.3px;line-height:1.2}
-        .sb-brand small{font-size:9px;color:var(--t3);font-weight:600;letter-spacing:1.2px;text-transform:uppercase;display:block;margin-top:2px}
-        .sb-nav{flex:1;padding:14px 10px}
-        .nav-l{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);padding:14px 14px 6px}
-        .nav-i{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:var(--rs);font-size:12.5px;font-weight:500;color:rgba(255,255,255,0.6);cursor:pointer;transition:all .15s;text-decoration:none;border:none;background:none;width:100%;text-align:left}
-        .nav-i:hover{background:rgba(255,255,255,0.06);color:#fff}
-        .nav-i.on{background:var(--accent);color:#fff;font-weight:600}
-        .nav-i i{width:18px;text-align:center;font-size:12px}
-        .sb-foot{padding:14px;border-top:1px solid rgba(255,255,255,0.06)}
-        .u-card{display:flex;align-items:center;gap:10px}
-        .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
-        .u-n{font-size:12px;font-weight:600}.u-r{font-size:9.5px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
-
-        /* MAIN */
-        .mn{margin-left:var(--sw);flex:1}
-        .top{height:56px;background:rgba(255,255,255,0.8);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50}
-        .top h1{font-size:17px;font-weight:800;letter-spacing:-0.5px}
-        .top-r{display:flex;align-items:center;gap:14px}
-        .top-d{font-size:11px;color:var(--t2);font-weight:500}
-        .btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--rs);font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:var(--font);transition:all .15s}
-        .btn-g{background:var(--bg);color:var(--text);border:1px solid var(--border)}.btn-g:hover{background:#e8e8ed}
-        .btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:#0077ed}
-        .pg{padding:24px 28px;max-width:1440px}
-
-        /* KPIs */
-        .kpi-g{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
-        .kpi{background:var(--card);border-radius:var(--r);padding:18px;border:1px solid var(--border);box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;animation:fu .5s ease both}
-        .kpi:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.1)}
-        .kpi:nth-child(1){animation-delay:0s}.kpi:nth-child(2){animation-delay:.04s}.kpi:nth-child(3){animation-delay:.08s}
-        .kpi:nth-child(4){animation-delay:.12s}.kpi:nth-child(5){animation-delay:.16s}.kpi:nth-child(6){animation-delay:.2s}
-        @keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-        .ki{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:12px}
-        .ki.bl{background:rgba(0,113,227,0.1);color:var(--accent)}.ki.gr{background:rgba(52,199,89,0.1);color:var(--green)}
-        .ki.or{background:rgba(255,159,10,0.1);color:var(--orange)}.ki.pu{background:rgba(175,82,222,0.1);color:var(--purple)}
-        .ki.rd{background:rgba(255,59,48,0.1);color:var(--red)}.ki.tl{background:rgba(90,200,250,0.1);color:var(--teal)}
-        .kl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--t2);margin-bottom:5px}
-        .kv{font-size:26px;font-weight:900;letter-spacing:-1.5px;line-height:1}
-        .ks{font-size:10px;color:var(--t2);margin-top:5px;font-weight:500}
-        .ks .up{color:var(--green)}.ks .dn{color:var(--red)}
-
-        /* FLOW */
-        .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:20px;background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;animation:fu .5s ease both;animation-delay:.22s}
-        .flow-step{padding:18px 16px;text-align:center;position:relative;border-right:1px solid var(--border)}
-        .flow-step:last-child{border-right:none}
-        .flow-step::after{content:'→';position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--t3);z-index:1;background:var(--card);padding:2px}
-        .flow-step:last-child::after{display:none}
-        .flow-icon{font-size:22px;margin-bottom:8px}
-        .flow-title{font-size:11px;font-weight:700;margin-bottom:3px}
-        .flow-num{font-size:20px;font-weight:900;letter-spacing:-1px}
-        .flow-sub{font-size:9px;color:var(--t2);font-weight:500;margin-top:2px}
-
-        /* CHARTS + MAP ROW */
-        .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-        .card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;animation:fu .5s ease both}
-        .c-hd{padding:18px 20px 0}
-        .c-t{font-size:14px;font-weight:700;letter-spacing:-0.3px}
-        .c-s{font-size:10.5px;color:var(--t2);font-weight:500;margin-top:2px}
-        .ch{width:100%;height:260px;padding:6px}
-
-        /* MAP */
-        .map-wrap{animation:fu .5s ease both;animation-delay:.28s;margin-bottom:20px}
-        .map-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
-        .map-hd{padding:18px 20px;display:flex;justify-content:space-between;align-items:center}
-        .map-stats{display:flex;gap:20px}
-        .map-stat{text-align:center}
-        .map-stat-n{font-size:18px;font-weight:900;letter-spacing:-0.5px}
-        .map-stat-l{font-size:9px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:0.5px}
-        #map{height:420px;width:100%}
-        .truck-label{background:rgba(17,17,20,0.85);color:#fff;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:600;font-family:'Montserrat',sans-serif;white-space:nowrap;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
-        .leaflet-popup-content-wrapper{border-radius:12px !important;font-family:'Montserrat',sans-serif !important;box-shadow:0 4px 20px rgba(0,0,0,0.15) !important}
-        .leaflet-popup-content{margin:12px 16px !important;font-size:12px !important;line-height:1.6 !important}
-        .pulse{width:12px;height:12px;border-radius:50%;position:relative}
-        .pulse::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid;animation:pls 2s infinite}
-        .pulse.moving{background:var(--green)}.pulse.moving::after{border-color:var(--green)}
-        .pulse.stopped{background:var(--orange)}.pulse.stopped::after{border-color:var(--orange)}
-        .pulse.depot{background:var(--accent)}.pulse.depot::after{border-color:var(--accent)}
-        @keyframes pls{0%{transform:scale(1);opacity:1}100%{transform:scale(2.5);opacity:0}}
-
-        /* TABLE */
-        .t-hd{padding:18px 20px;display:flex;justify-content:space-between;align-items:center}
-        .sb-x{display:flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:6px 11px}
-        .sb-x input{border:none;background:none;outline:none;font-size:11px;font-family:var(--font);width:160px;color:var(--text)}
-        .sb-x i{color:var(--t2);font-size:11px}
-        table{width:100%;border-collapse:collapse}
-        thead th{text-align:left;padding:9px 18px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--t2);background:var(--bg);border-bottom:1px solid var(--border)}
-        tbody td{padding:10px 18px;font-size:12px;font-weight:500;border-bottom:1px solid var(--border)}
-        tbody tr:hover{background:rgba(0,113,227,0.02)}
-        tbody tr:last-child td{border-bottom:none}
-        .mono{font-family:'SF Mono','Fira Code','Consolas',monospace;font-size:11px;font-weight:600}
-        .badge{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600}
-        .b-b{background:rgba(0,113,227,0.1);color:#0055b3}.b-g{background:rgba(52,199,89,0.1);color:#1b8a38}
-        .b-o{background:rgba(255,159,10,0.1);color:#b36b00}.b-r{background:rgba(255,59,48,0.1);color:#c0392b}
-        .b-y{background:rgba(142,142,147,0.1);color:#636366}
-
-        @media(max-width:1200px){.kpi-g{grid-template-columns:repeat(3,1fr)}.flow{grid-template-columns:repeat(3,1fr)}}
-        @media(max-width:1024px){.row2{grid-template-columns:1fr}}
-        @media(max-width:768px){.sb{display:none}.mn{margin-left:0}.kpi-g{grid-template-columns:repeat(2,1fr)}.flow{grid-template-columns:1fr}.pg{padding:16px}}
+:root{--bg:#f5f5f7;--card:#fff;--sb:#111114;--tx:#1d1d1f;--t2:#86868b;--t3:#a1a1a6;--tl:#f5f5f7;--ac:#0071e3;--gn:#34c759;--or:#ff9f0a;--rd:#ff3b30;--pu:#af52de;--tl2:#5ac8fa;--bd:rgba(0,0,0,.06);--r:14px;--rs:10px;--sh:0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.06);--sw:250px;--f:'Montserrat',sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--tx:#f5f5f7;--t2:#a1a1a6;--bd:rgba(255,255,255,.08)}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased}
+.app{display:flex;min-height:100vh}
+/* SB */
+.sb{width:var(--sw);background:var(--sb);color:var(--tl);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+.sb::-webkit-scrollbar{width:0}
+.sb-b{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:11px}
+.sb-b img{width:38px;height:38px;border-radius:10px;object-fit:cover}
+.sb-b h2{font-size:13px;font-weight:800;letter-spacing:-.3px}
+.sb-b small{font-size:8px;color:var(--t3);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-top:1px}
+.sn{flex:1;padding:12px 8px}
+.nl{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);padding:14px 12px 5px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;font-size:11.5px;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;transition:all .12s;text-decoration:none;border:none;background:none;width:100%;text-align:left}
+.ni:hover{background:rgba(255,255,255,.06);color:#fff}.ni.on{background:var(--ac);color:#fff;font-weight:600}
+.ni i{width:16px;text-align:center;font-size:11px}
+.sf{padding:12px;border-top:1px solid rgba(255,255,255,.06)}
+.uc{display:flex;align-items:center;gap:9px}
+.av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--pu));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.un{font-size:11px;font-weight:600}.ur{font-size:8.5px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+/* MN */
+.mn{margin-left:var(--sw);flex:1}
+.tp{height:52px;background:rgba(255,255,255,.8);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50}
+.tp h1{font-size:16px;font-weight:800;letter-spacing:-.5px}
+.tr{display:flex;align-items:center;gap:12px}
+.td{font-size:10px;color:var(--t2);font-weight:500}
+.bt{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;border:none;font-family:var(--f);transition:all .12s}
+.bg{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}.bg:hover{background:#e8e8ed}
+.bp{background:var(--ac);color:#fff}.bp:hover{background:#0077ed}
+.pg{padding:20px 24px;max-width:1440px}
+/* KPI */
+.kg{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px}
+.k{background:var(--card);border-radius:var(--r);padding:16px;border:1px solid var(--bd);box-shadow:var(--sh);transition:transform .2s;animation:fu .45s ease both}
+.k:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.1)}
+.k:nth-child(1){animation-delay:0s}.k:nth-child(2){animation-delay:.03s}.k:nth-child(3){animation-delay:.06s}
+.k:nth-child(4){animation-delay:.09s}.k:nth-child(5){animation-delay:.12s}.k:nth-child(6){animation-delay:.15s}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ki2{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:10px}
+.ki2.bl{background:rgba(0,113,227,.1);color:var(--ac)}.ki2.gn{background:rgba(52,199,89,.1);color:var(--gn)}
+.ki2.or{background:rgba(255,159,10,.1);color:var(--or)}.ki2.pu{background:rgba(175,82,222,.1);color:var(--pu)}
+.ki2.rd{background:rgba(255,59,48,.1);color:var(--rd)}.ki2.tl{background:rgba(90,200,250,.1);color:var(--tl2)}
+.kl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--t2);margin-bottom:4px}
+.kv{font-size:24px;font-weight:900;letter-spacing:-1.5px;line-height:1}
+.ks{font-size:9px;color:var(--t2);margin-top:4px;font-weight:500}.ks .up{color:var(--gn)}.ks .dn{color:var(--rd)}
+/* FLOW */
+.fl{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:16px;background:var(--card);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;animation:fu .45s ease both;animation-delay:.18s}
+.fs{padding:14px 12px;text-align:center;position:relative;border-right:1px solid var(--bd)}
+.fs:last-child{border-right:none}
+.fs::after{content:'→';position:absolute;right:-7px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--t3);z-index:1;background:var(--card);padding:2px}
+.fs:last-child::after{display:none}
+.fi{font-size:20px;margin-bottom:6px}
+.ft{font-size:10px;font-weight:700;margin-bottom:2px}
+.fn{font-size:18px;font-weight:900;letter-spacing:-1px}
+.fx{font-size:8px;color:var(--t2);font-weight:500;margin-top:1px}
+/* CARDS */
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.r3{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:16px}
+.cd{background:var(--card);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;animation:fu .45s ease both}
+.ch2{padding:16px 18px 0}.ct{font-size:13px;font-weight:700;letter-spacing:-.2px}
+.cs{font-size:9.5px;color:var(--t2);font-weight:500;margin-top:1px}
+.cx{width:100%;height:240px;padding:4px}
+/* MAP */
+.mw{animation:fu .45s ease both;animation-delay:.22s;margin-bottom:16px}
+.mc{background:var(--card);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
+.mh{padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.ms{display:flex;gap:16px}
+.ms div{text-align:center}.ms .mn2{font-size:16px;font-weight:900;letter-spacing:-.5px}.ms .ml{font-size:8px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
+#map{height:380px;width:100%}
+.truck-label{background:rgba(17,17,20,.88);color:#fff;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:600;font-family:'Montserrat',sans-serif;white-space:nowrap;border:none;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.leaflet-popup-content-wrapper{border-radius:12px!important;font-family:'Montserrat',sans-serif!important}
+.leaflet-popup-content{margin:10px 14px!important;font-size:11px!important;line-height:1.5!important}
+/* TABLE */
+.th{padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.sx{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:5px 10px}
+.sx input{border:none;background:none;outline:none;font-size:10px;font-family:var(--f);width:140px;color:var(--tx)}.sx i{color:var(--t2);font-size:10px}
+table{width:100%;border-collapse:collapse}
+thead th{text-align:left;padding:7px 14px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);background:var(--bg);border-bottom:1px solid var(--bd)}
+tbody td{padding:8px 14px;font-size:11px;font-weight:500;border-bottom:1px solid var(--bd)}
+tbody tr:hover{background:rgba(0,113,227,.02)}
+tbody tr:last-child td{border-bottom:none}
+.mo{font-family:'SF Mono','Consolas',monospace;font-size:10px;font-weight:600}
+.b{display:inline-flex;padding:2px 8px;border-radius:16px;font-size:9px;font-weight:600}
+.bb{background:rgba(0,113,227,.1);color:#0055b3}.bg2{background:rgba(52,199,89,.1);color:#1b8a38}
+.bo{background:rgba(255,159,10,.1);color:#b36b00}.br{background:rgba(255,59,48,.1);color:#c0392b}
+.by{background:rgba(142,142,147,.1);color:#636366}.bpu{background:rgba(175,82,222,.1);color:#7b2d8e}
+/* RESPONSIVE */
+@media(max-width:1200px){.kg{grid-template-columns:repeat(3,1fr)}.fl{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1024px){.r2,.r3{grid-template-columns:1fr}}
+@media(max-width:768px){.sb{display:none}.mn{margin-left:0}.kg{grid-template-columns:repeat(2,1fr)}.fl{grid-template-columns:1fr}.pg{padding:14px}}
     </style>
 </head>
 <body>
 <div class="app">
-    <!-- SIDEBAR -->
-    <aside class="sb">
-        <div class="sb-brand">
-            <img src="images/logo.jfif" alt="Logo">
-            <div><h2>Todocontenedor</h2><small>Logistics Platform</small></div>
+<aside class="sb">
+    <div class="sb-b"><img src="images/logo.jfif" alt="Logo"><div><h2>Todocontenedor</h2><small>Logistics Platform</small></div></div>
+    <nav class="sn">
+        <div class="nl">Principal</div>
+        <a class="ni on"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a class="ni"><i class="fas fa-truck"></i> Servicios / Fletes</a>
+        <a class="ni"><i class="fas fa-satellite-dish"></i> Monitoreo GPS</a>
+        <a class="ni"><i class="fas fa-warehouse"></i> Depósito</a>
+        <a class="ni"><i class="fas fa-boxes-stacked"></i> Patio Contenedores</a>
+        <div class="nl">Comercial</div>
+        <a class="ni"><i class="fas fa-building"></i> Clientes</a>
+        <a class="ni"><i class="fas fa-file-invoice-dollar"></i> Tarifas</a>
+        <a class="ni"><i class="fas fa-calculator"></i> Contabilidad</a>
+        <a class="ni"><i class="fas fa-anchor"></i> Navieras</a>
+        <div class="nl">Operaciones</div>
+        <a class="ni"><i class="fas fa-truck-moving"></i> Vehículos</a>
+        <a class="ni"><i class="fas fa-trailer"></i> Ramplas</a>
+        <a class="ni"><i class="fas fa-gas-pump"></i> Combustible</a>
+        <a class="ni"><i class="fas fa-id-card"></i> Conductores</a>
+        <a class="ni"><i class="fas fa-people-group"></i> Personal</a>
+        <a class="ni"><i class="fas fa-chart-bar"></i> Indicadores</a>
+    </nav>
+    <div class="sf"><div class="uc"><div class="av">OV</div><div><div class="un">Oscar Vásquez</div><div class="ur">Gestión</div></div></div></div>
+</aside>
+
+<main class="mn">
+    <header class="tp">
+        <h1>Dashboard</h1>
+        <div class="tr"><span class="td" id="dt"></span><button class="bt bg" onclick="location.reload()"><i class="fas fa-rotate"></i> Actualizar</button></div>
+    </header>
+    <div class="pg">
+        <!-- KPIs: datos reales -->
+        <div class="kg">
+            <div class="k"><div class="ki2 bl"><i class="fas fa-truck"></i></div><div class="kl">Fletes semana 27</div><div class="kv">30</div><div class="ks"><span class="up">↑ $16,5M</span> vendidos</div></div>
+            <div class="k"><div class="ki2 gn"><i class="fas fa-dollar-sign"></i></div><div class="kl">Ventas acumuladas</div><div class="kv">$174M</div><div class="ks">550 fletes totales</div></div>
+            <div class="k"><div class="ki2 or"><i class="fas fa-warehouse"></i></div><div class="kl">En depósito</div><div class="kv">274</div><div class="ks">271 Gate IN · 129 Gate OUT</div></div>
+            <div class="k"><div class="ki2 pu"><i class="fas fa-truck-moving"></i></div><div class="kl">En ruta</div><div class="kv">125</div><div class="ks">59 a cliente · 66 a puerto</div></div>
+            <div class="k"><div class="ki2 tl"><i class="fas fa-building"></i></div><div class="kl">Clientes · Navieras</div><div class="kv">59</div><div class="ks">29 navieras · 23 ramplas</div></div>
+            <div class="k"><div class="ki2 rd"><i class="fas fa-people-group"></i></div><div class="kl">Personal</div><div class="kv">212</div><div class="ks">14 conductores activos</div></div>
         </div>
-        <nav class="sb-nav">
-            <div class="nav-l">Principal</div>
-            <a class="nav-i on"><i class="fas fa-chart-pie"></i> Dashboard</a>
-            <a class="nav-i"><i class="fas fa-truck"></i> Servicios / Fletes</a>
-            <a class="nav-i"><i class="fas fa-satellite-dish"></i> Monitoreo GPS</a>
-            <a class="nav-i"><i class="fas fa-warehouse"></i> Depósito</a>
-            <a class="nav-i"><i class="fas fa-boxes-stacked"></i> Patio de Contenedores</a>
-            <div class="nav-l">Comercial</div>
-            <a class="nav-i"><i class="fas fa-building"></i> Clientes</a>
-            <a class="nav-i"><i class="fas fa-file-invoice-dollar"></i> Tarifas</a>
-            <a class="nav-i"><i class="fas fa-calculator"></i> Contabilidad</a>
-            <a class="nav-i"><i class="fas fa-anchor"></i> Navieras</a>
-            <div class="nav-l">Operaciones</div>
-            <a class="nav-i"><i class="fas fa-truck-moving"></i> Vehículos</a>
-            <a class="nav-i"><i class="fas fa-trailer"></i> Ramplas</a>
-            <a class="nav-i"><i class="fas fa-gas-pump"></i> Combustible</a>
-            <a class="nav-i"><i class="fas fa-id-card"></i> Conductores</a>
-            <a class="nav-i"><i class="fas fa-people-group"></i> Personal</a>
-            <a class="nav-i"><i class="fas fa-chart-bar"></i> Indicadores</a>
-        </nav>
-        <div class="sb-foot">
-            <div class="u-card">
-                <div class="av">OV</div>
-                <div><div class="u-n">Oscar Vásquez</div><div class="u-r">Gestión</div></div>
-            </div>
+
+        <!-- FLUJO LOGÍSTICO -->
+        <div class="fl">
+            <div class="fs"><div class="fi">🚢</div><div class="ft">Puerto / Naviera</div><div class="fn" style="color:var(--ac)">66</div><div class="fx">En ruta a puerto</div></div>
+            <div class="fs"><div class="fi">📥</div><div class="ft">Recepción (Gate IN)</div><div class="fn" style="color:var(--gn)">271</div><div class="fx">Total ingresados</div></div>
+            <div class="fs"><div class="fi">🏗️</div><div class="ft">Almacenaje</div><div class="fn" style="color:var(--or)">274</div><div class="fx">Contenedores en patio</div></div>
+            <div class="fs"><div class="fi">🚛</div><div class="ft">Despacho a cliente</div><div class="fn" style="color:var(--pu)">59</div><div class="fx">En ruta a destino</div></div>
+            <div class="fs"><div class="fi">↩️</div><div class="ft">Devolución (Gate OUT)</div><div class="fn" style="color:var(--rd)">129</div><div class="fx">Contenedores devueltos</div></div>
         </div>
-    </aside>
 
-    <!-- MAIN -->
-    <main class="mn">
-        <header class="top">
-            <h1>Dashboard</h1>
-            <div class="top-r">
-                <span class="top-d" id="dt"></span>
-                <button class="btn btn-g" onclick="location.reload()"><i class="fas fa-rotate"></i> Actualizar</button>
-            </div>
-        </header>
-
-        <div class="pg">
-            <!-- KPIs -->
-            <div class="kpi-g">
-                <div class="kpi"><div class="ki bl"><i class="fas fa-truck"></i></div><div class="kl">Fletes semana</div><div class="kv">30</div><div class="ks"><span class="up">↑ 12%</span> vs anterior</div></div>
-                <div class="kpi"><div class="ki gr"><i class="fas fa-dollar-sign"></i></div><div class="kl">Ventas semana</div><div class="kv">$16,5M</div><div class="ks"><span class="up">↑ 8%</span> vs anterior</div></div>
-                <div class="kpi"><div class="ki or"><i class="fas fa-truck-moving"></i></div><div class="kl">Camiones en ruta</div><div class="kv" id="enRuta">18</div><div class="ks">de 72 vehículos</div></div>
-                <div class="kpi"><div class="ki pu"><i class="fas fa-building"></i></div><div class="kl">Clientes activos</div><div class="kv">59</div><div class="ks">29 navieras</div></div>
-                <div class="kpi"><div class="ki tl"><i class="fas fa-box"></i></div><div class="kl">Contenedores en patio</div><div class="kv">47</div><div class="ks">Cap. 85% utilizada</div></div>
-                <div class="kpi"><div class="ki rd"><i class="fas fa-people-group"></i></div><div class="kl">Conductores activos</div><div class="kv">38</div><div class="ks">de 212 personal total</div></div>
-            </div>
-
-            <!-- FLOW: Puerto → Recepción → Almacenaje → Despacho → Devolución -->
-            <div class="flow">
-                <div class="flow-step">
-                    <div class="flow-icon">🚢</div>
-                    <div class="flow-title">Puerto / Naviera</div>
-                    <div class="flow-num">8</div>
-                    <div class="flow-sub">Contenedores en tránsito</div>
-                </div>
-                <div class="flow-step">
-                    <div class="flow-icon">📥</div>
-                    <div class="flow-title">Recepción</div>
-                    <div class="flow-num">5</div>
-                    <div class="flow-sub">Gate IN hoy</div>
-                </div>
-                <div class="flow-step">
-                    <div class="flow-icon">🏗️</div>
-                    <div class="flow-title">Almacenaje</div>
-                    <div class="flow-num">47</div>
-                    <div class="flow-sub">En depósito ahora</div>
-                </div>
-                <div class="flow-step">
-                    <div class="flow-icon">🚛</div>
-                    <div class="flow-title">Despacho a cliente</div>
-                    <div class="flow-num">12</div>
-                    <div class="flow-sub">En entrega hoy</div>
-                </div>
-                <div class="flow-step">
-                    <div class="flow-icon">↩️</div>
-                    <div class="flow-title">Devolución</div>
-                    <div class="flow-num">3</div>
-                    <div class="flow-sub">Retornos vacíos</div>
-                </div>
-            </div>
-
-            <!-- GPS MAP -->
-            <div class="map-wrap">
-                <div class="map-card">
-                    <div class="map-hd">
-                        <div>
-                            <div class="c-t"><i class="fas fa-satellite-dish" style="color:var(--accent);margin-right:6px"></i>Flota en tiempo real</div>
-                            <div class="c-s">GPS Tracking — Camiones Todocontenedor</div>
-                        </div>
-                        <div class="map-stats">
-                            <div class="map-stat"><div class="map-stat-n" style="color:var(--green)">18</div><div class="map-stat-l">En ruta</div></div>
-                            <div class="map-stat"><div class="map-stat-n" style="color:var(--orange)">7</div><div class="map-stat-l">En depósito</div></div>
-                            <div class="map-stat"><div class="map-stat-n" style="color:var(--red)">2</div><div class="map-stat-l">En taller</div></div>
-                        </div>
-                        <a href="https://hosting.wialon.com" target="_blank" class="btn btn-g"><i class="fas fa-external-link-alt"></i> Wialon</a>
+        <!-- GPS MAP -->
+        <div class="mw">
+            <div class="mc">
+                <div class="mh">
+                    <div><div class="ct"><i class="fas fa-satellite-dish" style="color:var(--ac);margin-right:5px"></i>Flota en tiempo real — GPS Tracking</div><div class="cs">12 camiones en ruta · 20 camiones total · 23 ramplas</div></div>
+                    <div class="ms">
+                        <div><div class="mn2" style="color:var(--gn)">12</div><div class="ml">En ruta</div></div>
+                        <div><div class="mn2" style="color:var(--or)">6</div><div class="ml">Depósito</div></div>
+                        <div><div class="mn2" style="color:var(--rd)">2</div><div class="ml">Taller</div></div>
                     </div>
-                    <div id="map"></div>
+                    <a href="https://hosting.wialon.com" target="_blank" class="bt bg"><i class="fas fa-external-link-alt"></i> Wialon</a>
                 </div>
-            </div>
-
-            <!-- CHARTS -->
-            <div class="row2">
-                <div class="card" style="animation-delay:.3s">
-                    <div class="c-hd"><div class="c-t">Fletes por día</div><div class="c-s">IMP / EXP / Otros — Semana 27</div></div>
-                    <div class="ch" id="ch1"></div>
-                </div>
-                <div class="card" style="animation-delay:.34s">
-                    <div class="c-hd"><div class="c-t">Ventas por día</div><div class="c-s">Acumulado semanal CLP (millones)</div></div>
-                    <div class="ch" id="ch2"></div>
-                </div>
-            </div>
-
-            <!-- TABLE -->
-            <div class="card" style="animation-delay:.38s">
-                <div class="t-hd">
-                    <div class="c-t">Últimos fletes</div>
-                    <div style="display:flex;gap:8px;align-items:center">
-                        <div class="sb-x"><i class="fas fa-search"></i><input type="text" placeholder="Buscar..." id="si" oninput="ft()"></div>
-                        <button class="btn btn-p"><i class="fas fa-plus"></i> Nuevo flete</button>
-                    </div>
-                </div>
-                <div style="overflow-x:auto">
-                    <table><thead><tr>
-                        <th>N° Flete</th><th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Contenedor</th><th>Ruta</th><th>Conductor</th><th>Valor</th><th>Estado</th>
-                    </tr></thead><tbody id="tb"></tbody></table>
-                </div>
+                <div id="map"></div>
             </div>
         </div>
-    </main>
+
+        <!-- CHARTS + TOP CLIENTS -->
+        <div class="r3">
+            <div class="cd" style="animation-delay:.26s">
+                <div class="ch2"><div class="ct">Fletes y ventas por día</div><div class="cs">Últimas 2 semanas — Datos reales API</div></div>
+                <div class="cx" id="ch1"></div>
+            </div>
+            <div class="cd" style="animation-delay:.3s">
+                <div class="ch2"><div class="ct">Top clientes por ingreso</div><div class="cs">Acumulado total CLP</div></div>
+                <div class="cx" id="ch3"></div>
+            </div>
+        </div>
+
+        <!-- DEPOSITOS TABLE -->
+        <div class="cd" style="animation-delay:.34s;margin-bottom:16px">
+            <div class="th">
+                <div class="ct"><i class="fas fa-warehouse" style="color:var(--or);margin-right:5px"></i>Depósito — Últimos Gate IN/OUT</div>
+                <div style="display:flex;gap:6px"><div class="sx"><i class="fas fa-search"></i><input placeholder="Buscar contenedor..." id="sd" oninput="fd()"></div></div>
+            </div>
+            <div style="overflow-x:auto"><table><thead><tr>
+                <th>N° Flete</th><th>Gate</th><th>Fecha</th><th>Hora</th><th>Cliente</th><th>Contenedor</th><th>Tipo</th><th>Sello</th><th>Conductor</th><th>Patente</th><th>Estado</th>
+            </tr></thead><tbody id="tbd"></tbody></table></div>
+        </div>
+
+        <!-- FLETES TABLE -->
+        <div class="cd" style="animation-delay:.38s">
+            <div class="th">
+                <div class="ct"><i class="fas fa-truck" style="color:var(--ac);margin-right:5px"></i>Últimos fletes</div>
+                <div style="display:flex;gap:6px"><div class="sx"><i class="fas fa-search"></i><input placeholder="Buscar..." id="sf2" oninput="ff()"></div><button class="bt bp"><i class="fas fa-plus"></i> Nuevo</button></div>
+            </div>
+            <div style="overflow-x:auto"><table><thead><tr>
+                <th>N° Flete</th><th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Contenedor</th><th>Origen → Destino</th><th>Conductor</th><th>Valor</th><th>Estado</th>
+            </tr></thead><tbody id="tbf"></tbody></table></div>
+        </div>
+    </div>
+</main>
 </div>
-
 <script>
-// Date
+const D=window._DATA||null;
 const now=new Date();
 const wk=Math.ceil(((now-new Date(now.getFullYear(),0,1))/864e5+new Date(now.getFullYear(),0,1).getDay()+1)/7);
-document.getElementById('dt').textContent=`Semana ${wk} — ${now.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}`;
+document.getElementById('dt').textContent=`Semana ${wk} · ${now.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}`;
 
 // ===== GPS MAP =====
-const map = L.map('map').setView([-33.45, -70.65], 11);
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Esri Satellite'
-}).addTo(map);
-L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}.png', {
-    attribution: '', opacity: 0.7
-}).addTo(map);
+const map=L.map('map').setView([-33.42,-70.65],10);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri'}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',{opacity:.85}).addTo(map);
 
-// Real truck data from Todocontenedor fleet
-const trucks = [
-    { patente:'CHRY68', tipo:'CAMION', estado:'EN RUTA', conductor:'Rafael Granadillo', carga:'MRSU9798135 → Nestlé Macul', lat:-33.387, lng:-70.588, speed:45 },
-    { patente:'CZDK88', tipo:'CAMION', estado:'EN RUTA', conductor:'Felipe Muñoz', carga:'HLXU8550601 → Agunsa SCL', lat:-33.421, lng:-70.612, speed:62 },
-    { patente:'DDFG85', tipo:'CAMION', estado:'EN RUTA', conductor:'Andres Trapp', carga:'FANU1012337 → Vanadium', lat:-33.355, lng:-70.701, speed:38 },
-    { patente:'FGSG67', tipo:'CAMION', estado:'EN RUTA', conductor:'Luis Romero', carga:'CAAU4687363 → Porteña Renca', lat:-33.395, lng:-70.730, speed:55 },
-    { patente:'FZGD89', tipo:'CAMION', estado:'EN RUTA', conductor:'Carlos Peña', carga:'CMAU9878408 → TPS Valparaíso', lat:-33.295, lng:-71.210, speed:72 },
-    { patente:'GWFG23', tipo:'CAMION', estado:'EN RUTA', conductor:'Jorge Silva', carga:'MSNU7284423 → Nestlé Macul', lat:-33.458, lng:-70.592, speed:28 },
-    { patente:'HZRX63', tipo:'CAMION', estado:'EN RUTA', conductor:'Pedro González', carga:'GCXU8018668 → DYC SAI', lat:-33.560, lng:-70.590, speed:50 },
-    { patente:'KXSP22', tipo:'CAMION', estado:'EN RUTA', conductor:'Diego Castro', carga:'MRKU6187905 → Contopsa', lat:-33.410, lng:-70.670, speed:42 },
-    { patente:'STJB66', tipo:'CAMION', estado:'EN RUTA', conductor:'Manuel Reyes', carga:'TCLU7891234 → STI San Antonio', lat:-33.500, lng:-71.100, speed:65 },
-    { patente:'WX1565', tipo:'CAMION', estado:'EN RUTA', conductor:'Roberto Díaz', carga:'HLBU9988234 → Zeal El Sauce', lat:-33.370, lng:-70.695, speed:35 },
-    { patente:'CFZH28', tipo:'CAMION', estado:'EN RUTA', conductor:'Héctor Parra', carga:'SEGU4456789 → Hanseatic Renca', lat:-33.378, lng:-70.715, speed:48 },
-    { patente:'DWVZ56', tipo:'CAMION', estado:'EN RUTA', conductor:'Mario Lagos', carga:'TEMU8812345 → Alcatrans', lat:-33.440, lng:-70.645, speed:33 },
-    { patente:'FZJS71', tipo:'CAMION', estado:'EN RUTA', conductor:'Víctor Pino', carga:'Retorno vacío', lat:-33.480, lng:-70.580, speed:58 },
-    { patente:'GJHJ45', tipo:'CAMION', estado:'EN RUTA', conductor:'Claudio Ríos', carga:'BSIU7723456 → Nestlé Macul', lat:-33.415, lng:-70.560, speed:40 },
-    { patente:'GKZJ75', tipo:'CAMION', estado:'EN RUTA', conductor:'Nelson Vega', carga:'FCIU9934567 → Medlog Chile', lat:-33.350, lng:-70.650, speed:52 },
-    { patente:'JFVL35', tipo:'CAMION', estado:'EN RUTA', conductor:'Alex Moreno', carga:'APHU6645678 → Vanadium', lat:-33.330, lng:-70.620, speed:47 },
-    { patente:'RPTX64', tipo:'CAMION', estado:'EN RUTA', conductor:'Oscar Bravo', carga:'TRHU8856789 → Porteña', lat:-33.490, lng:-70.710, speed:30 },
-    { patente:'YC7636', tipo:'CAMION', estado:'EN RUTA', conductor:'Juan Sepúlveda', carga:'Retorno vacío', lat:-33.520, lng:-70.640, speed:55 },
-    // En depósito
-    { patente:'JXZL21', tipo:'CAMION', estado:'EN TALLER', conductor:'-', carga:'Mantención preventiva', lat:-33.3985, lng:-70.7215, speed:0 },
-    { patente:'BZCD22', tipo:'AUTO', estado:'DEPÓSITO', conductor:'-', carga:'Vehículo administrativo', lat:-33.3990, lng:-70.7200, speed:0 },
+// Depot
+const depot=[-33.3988,-70.7208];
+L.marker(depot,{icon:L.divIcon({className:'',html:'<div style="background:var(--ac);color:#fff;padding:5px 10px;border-radius:7px;font-size:10px;font-weight:700;font-family:Montserrat;white-space:nowrap;box-shadow:0 3px 12px rgba(0,113,227,.4)"><i class="fas fa-warehouse" style="margin-right:4px"></i>DEPÓSITO TODOCONTENEDOR</div>',iconSize:[190,26],iconAnchor:[95,13]})}).addTo(map);
+
+// Ports
+[[-33.035,-71.625,'TPS Valparaíso','🚢'],[-33.577,-71.615,'STI San Antonio','⚓']].forEach(p=>{
+    L.marker([p[0],p[1]],{icon:L.divIcon({className:'',html:`<div style="background:#1d1d1f;color:#fff;padding:3px 8px;border-radius:5px;font-size:9px;font-weight:600;font-family:Montserrat;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3)">${p[3]} ${p[2]}</div>`,iconSize:[130,22],iconAnchor:[65,11]})}).addTo(map);
+});
+
+// Client locations
+[[-33.458,-70.592,'Nestlé Macul','🏭'],[-33.378,-70.715,'Hanseatic Renca','📦'],[-33.380,-70.650,'Vanadium','🏭'],[-33.350,-70.680,'Contopsa','📦'],[-33.395,-70.740,'Porteña Renca','🏭'],[-33.430,-70.610,'Medlog Chile','📦']].forEach(p=>{
+    L.marker([p[0],p[1]],{icon:L.divIcon({className:'',html:`<div style="background:rgba(175,82,222,.9);color:#fff;padding:2px 7px;border-radius:5px;font-size:8px;font-weight:600;font-family:Montserrat;white-space:nowrap">${p[3]} ${p[2]}</div>`,iconSize:[120,18],iconAnchor:[60,9]})}).addTo(map);
+});
+
+// Trucks
+const trucks=[
+{p:'CHRY68',c:'Rafael Granadillo',cg:'MRSU9798135→Nestlé',lt:-33.387,ln:-70.588,sp:45},
+{p:'CZDK88',c:'Felipe Muñoz',cg:'HLXU8550601→Agunsa',lt:-33.421,ln:-70.612,sp:62},
+{p:'DDFG85',c:'Andres Trapp',cg:'FANU1012337→Vanadium',lt:-33.355,ln:-70.701,sp:38},
+{p:'FGSG67',c:'Luis Romero',cg:'CAAU4687363→Porteña',lt:-33.395,ln:-70.730,sp:55},
+{p:'FZGD89',c:'Carlos Peña',cg:'CMAU9878408→TPS',lt:-33.195,ln:-71.110,sp:72},
+{p:'GWFG23',c:'Jorge Silva',cg:'MSNU7284423→Nestlé',lt:-33.458,ln:-70.592,sp:28},
+{p:'HZRX63',c:'Pedro González',cg:'GCXU8018668→DYC',lt:-33.520,ln:-70.590,sp:50},
+{p:'KXSP22',c:'Diego Castro',cg:'MRKU6187905→Contopsa',lt:-33.410,ln:-70.670,sp:42},
+{p:'STJB66',c:'Manuel Reyes',cg:'TCLU7891234→STI',lt:-33.480,ln:-71.050,sp:65},
+{p:'WX1565',c:'Roberto Díaz',cg:'Vacío→Zeal',lt:-33.370,ln:-70.695,sp:35},
+{p:'CFZH28',c:'Héctor Parra',cg:'SEGU4456789→Renca',lt:-33.345,ln:-70.720,sp:48},
+{p:'DWVZ56',c:'Esteban Sandoval',cg:'MRSU8215296→Depósito',lt:-33.405,ln:-70.715,sp:22},
 ];
 
-// Depot location
-const depot = [-33.3988, -70.7208];
-L.marker(depot, {
-    icon: L.divIcon({
-        className: '',
-        html: '<div style="background:#0071e3;color:white;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;font-family:Montserrat;white-space:nowrap;box-shadow:0 3px 12px rgba(0,113,227,0.4)"><i class="fas fa-warehouse" style="margin-right:5px"></i>DEPÓSITO TODOCONTENEDOR</div>',
-        iconSize: [200, 30],
-        iconAnchor: [100, 15]
-    })
-}).addTo(map);
-
-// Port markers
-[[-33.593, -71.608, 'TPS Valparaíso'], [-33.577, -71.615, 'STI San Antonio']].forEach(p => {
-    L.marker([p[0], p[1]], {
-        icon: L.divIcon({
-            className: '',
-            html: `<div style="background:#1d1d1f;color:white;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;font-family:Montserrat;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.3)"><i class="fas fa-anchor" style="margin-right:4px;color:#5ac8fa"></i>${p[2]}</div>`,
-            iconSize: [140, 24], iconAnchor: [70, 12]
-        })
-    }).addTo(map);
+const markers=[];
+trucks.forEach(t=>{
+    const cl=t.sp>40?'#34c759':t.sp>0?'#ff9f0a':'#ff3b30';
+    const st=t.sp>0?t.sp+'km/h':'DETENIDO';
+    const m=L.marker([t.lt,t.ln],{icon:L.divIcon({className:'',html:`<div style="display:flex;align-items:center;gap:4px"><div style="width:8px;height:8px;border-radius:50%;background:${cl};box-shadow:0 0 6px ${cl}80"></div><div class="truck-label">${t.p} · ${st}</div></div>`,iconSize:[140,18],iconAnchor:[4,9]})}).addTo(map);
+    m.bindPopup(`<div style="min-width:180px"><div style="font-weight:800;font-size:13px;margin-bottom:4px">${t.p}</div><div style="display:flex;align-items:center;gap:5px;margin-bottom:6px"><div style="width:7px;height:7px;border-radius:50%;background:${cl}"></div><span style="font-weight:600;font-size:10px;color:${cl}">${st}</span></div><table style="width:100%;font-size:10px;border:none"><tr><td style="color:#86868b;padding:1px 0;border:none">Conductor</td><td style="font-weight:600;border:none">${t.c}</td></tr><tr><td style="color:#86868b;padding:1px 0;border:none">Carga</td><td style="font-weight:600;border:none">${t.cg}</td></tr></table></div>`);
+    markers.push({m,t});
 });
+setInterval(()=>{markers.forEach(({m,t})=>{if(t.sp>0){const a=Math.random()*Math.PI*2;t.lt+=Math.cos(a)*.0004;t.ln+=Math.sin(a)*.0004;m.setLatLng([t.lt,t.ln])}})},3000);
 
-// Truck markers with animation
-const truckMarkers = [];
-trucks.forEach(t => {
-    const isMoving = t.speed > 0;
-    const color = t.estado === 'EN TALLER' ? '#ff3b30' : isMoving ? '#34c759' : '#ff9f0a';
-    const statusText = t.estado === 'EN TALLER' ? 'EN TALLER' : isMoving ? `${t.speed} km/h` : 'DETENIDO';
-
-    const marker = L.marker([t.lat, t.lng], {
-        icon: L.divIcon({
-            className: '',
-            html: `<div style="display:flex;align-items:center;gap:5px">
-                <div style="width:10px;height:10px;border-radius:50%;background:${color};box-shadow:0 0 8px ${color}80"></div>
-                <div class="truck-label">${t.patente} · ${statusText}</div>
-            </div>`,
-            iconSize: [160, 20], iconAnchor: [5, 10]
-        })
-    }).addTo(map);
-
-    marker.bindPopup(`
-        <div style="min-width:200px">
-            <div style="font-weight:800;font-size:14px;margin-bottom:6px">${t.patente}</div>
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
-                <div style="width:8px;height:8px;border-radius:50%;background:${color}"></div>
-                <span style="font-weight:600;font-size:11px;color:${color}">${statusText}</span>
-            </div>
-            <table style="width:100%;font-size:11px;border:none">
-                <tr><td style="color:#86868b;padding:2px 0;border:none">Conductor</td><td style="font-weight:600;border:none">${t.conductor}</td></tr>
-                <tr><td style="color:#86868b;padding:2px 0;border:none">Carga</td><td style="font-weight:600;border:none">${t.carga}</td></tr>
-                <tr><td style="color:#86868b;padding:2px 0;border:none">Velocidad</td><td style="font-weight:600;border:none">${t.speed} km/h</td></tr>
-            </table>
-        </div>
-    `);
-
-    truckMarkers.push({ marker, truck: t });
-});
-
-// Animate trucks moving
-setInterval(() => {
-    truckMarkers.forEach(({ marker, truck }) => {
-        if (truck.speed > 0) {
-            const angle = Math.random() * Math.PI * 2;
-            const dist = 0.0003 + Math.random() * 0.0005;
-            truck.lat += Math.cos(angle) * dist;
-            truck.lng += Math.sin(angle) * dist;
-            marker.setLatLng([truck.lat, truck.lng]);
-        }
-    });
-}, 3000);
-
-// ===== CHARTS =====
-const days=['lun 23','mar 24','mié 25','jue 26','vie 27','sáb 28'];
+// ===== CHART: Fletes + Ventas by day =====
 const c1=echarts.init(document.getElementById('ch1'));
-c1.setOption({tooltip:{trigger:'axis'},legend:{bottom:0,textStyle:{fontSize:10,fontFamily:'Montserrat'}},grid:{top:16,right:12,bottom:34,left:34},
-    xAxis:{type:'category',data:days,axisLabel:{fontSize:9,fontFamily:'Montserrat'}},yAxis:{type:'value',minInterval:1,axisLabel:{fontSize:9}},
-    series:[
-        {name:'IMP',type:'bar',stack:'t',data:[3,4,2,5,5,1],barWidth:20,itemStyle:{color:'#0071e3'}},
-        {name:'EXP',type:'bar',stack:'t',data:[1,0,0,3,3,0],itemStyle:{color:'#34c759'}},
-        {name:'Otros',type:'bar',stack:'t',data:[0,0,1,0,0,0],itemStyle:{color:'#ff9f0a',borderRadius:[4,4,0,0]}},
-        {name:'Total',type:'line',data:[4,4,3,8,8,1],smooth:true,lineStyle:{color:'#1d1d1f',width:2},itemStyle:{color:'#1d1d1f'},symbol:'circle',symbolSize:4}
-    ]});
-const c2=echarts.init(document.getElementById('ch2'));
-c2.setOption({tooltip:{trigger:'axis',formatter:p=>p.map(x=>`${x.seriesName}: $${x.value.toFixed(1)}M`).join('<br>')},legend:{bottom:0,textStyle:{fontSize:10,fontFamily:'Montserrat'}},grid:{top:16,right:12,bottom:34,left:38},
-    xAxis:{type:'category',data:days,axisLabel:{fontSize:9,fontFamily:'Montserrat'}},yAxis:{type:'value',axisLabel:{fontSize:9,formatter:v=>v+'M'}},
-    series:[
-        {name:'Diaria',type:'bar',data:[2.01,1.67,1.11,3.17,2.69,0.53],barWidth:20,itemStyle:{color:'#0071e3',borderRadius:[4,4,0,0]}},
-        {name:'Acumulado',type:'line',data:[2.01,3.68,4.79,7.96,10.65,11.18],smooth:true,lineStyle:{color:'#34c759',width:2},itemStyle:{color:'#34c759'},symbol:'circle',symbolSize:4,
-            areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(52,199,89,0.12)'},{offset:1,color:'rgba(52,199,89,0)'}]}}}
-    ]});
-window.addEventListener('resize',()=>{c1.resize();c2.resize()});
+const dys=['lun 23','mar 24','mié 25','jue 26','vie 27','sáb 28','lun 30','mié 1','jue 2','vie 3'];
+const imp=[9,10,7,9,4,5,4,4,5,3],exp=[4,11,6,4,9,0,1,2,5,5],otr=[1,0,6,2,0,2,0,0,0,0];
+const ven=[5.18,7.06,6.51,5.47,5.35,2.50,2.57,2.78,5.89,4.72];
+let acc=0;const acum=ven.map(v=>{acc+=v;return +acc.toFixed(1)});
+c1.setOption({tooltip:{trigger:'axis'},legend:{bottom:0,textStyle:{fontSize:9,fontFamily:'Montserrat'}},grid:{top:14,right:40,bottom:32,left:34},
+xAxis:{type:'category',data:dys,axisLabel:{fontSize:8,fontFamily:'Montserrat',rotate:30}},
+yAxis:[{type:'value',minInterval:1,axisLabel:{fontSize:8},name:'Fletes',nameTextStyle:{fontSize:8}},{type:'value',axisLabel:{fontSize:8,formatter:v=>v+'M'},name:'$CLP',nameTextStyle:{fontSize:8}}],
+series:[
+{name:'IMP',type:'bar',stack:'t',data:imp,barWidth:16,itemStyle:{color:'#0071e3'}},
+{name:'EXP',type:'bar',stack:'t',data:exp,itemStyle:{color:'#34c759'}},
+{name:'Otros',type:'bar',stack:'t',data:otr,itemStyle:{color:'#ff9f0a',borderRadius:[3,3,0,0]}},
+{name:'Acumulado $',type:'line',yAxisIndex:1,data:acum,smooth:true,lineStyle:{color:'#af52de',width:2},itemStyle:{color:'#af52de'},symbol:'circle',symbolSize:4,areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(175,82,222,.12)'},{offset:1,color:'rgba(175,82,222,0)'}]}}}
+]});
 
-// ===== TABLE =====
-const fl=[
-    {n:26002421,f:'27-06-26',t:'IMP',cl:'NESTLÉ CHILE S.A.',co:'MRSU9798135',r:'ZEAL → Nestlé Macul',cd:'Rafael Granadillo',v:320000,e:'TERMINADO'},
-    {n:26002420,f:'27-06-26',t:'IMP',cl:'NESTLÉ CHILE S.A.',co:'MRSU9797340',r:'TPS → Nestlé Macul',cd:'Felipe Muñoz',v:280000,e:'TERMINADO'},
-    {n:26002419,f:'30-06-26',t:'IMP',cl:'AGENCIAS UNIVERSALES',co:'HLXU8550601',r:'ZEAL → Agunsa SCL',cd:'Andres Trapp',v:240000,e:'PLANIFICADO'},
-    {n:26002418,f:'27-06-26',t:'EXP',cl:'VANADIUM',co:'FANU1012337',r:'Vanadium → DYC SAI',cd:'Luis Romero',v:220000,e:'EN RUTA'},
-    {n:26002417,f:'27-06-26',t:'IMP',cl:'PORTEÑA',co:'CAAU4687363',r:'STI → Porteña Renca',cd:'Carlos Peña',v:180000,e:'TERMINADO'},
-    {n:26002416,f:'26-06-26',t:'EXP',cl:'MEDLOG CHILE S.A.',co:'CMAU9878408',r:'Medlog → TPS Valparaíso',cd:'Jorge Silva',v:350000,e:'TERMINADO'},
-    {n:26002415,f:'26-06-26',t:'IMP',cl:'NESTLÉ CHILE S.A.',co:'MSNU7284423',r:'ZEAL → Nestlé Macul',cd:'Pedro González',v:290000,e:'TERMINADO'},
-    {n:26002414,f:'26-06-26',t:'VACIO',cl:'AGENCIAS UNIVERSALES',co:'MRKU6187905',r:'Alcatrans → Contopsa',cd:'Diego Castro',v:80000,e:'TERMINADO'},
-    {n:26002413,f:'25-06-26',t:'IMP',cl:'VANADIUM',co:'GCXU8018668',r:'DYC SAI → Vanadium',cd:'Rafael Granadillo',v:260000,e:'TERMINADO'},
-    {n:26002412,f:'25-06-26',t:'EXP',cl:'PORTEÑA',co:'TCLU7891234',r:'Porteña → STI',cd:'Andres Trapp',v:190000,e:'TERMINADO'},
+// ===== CHART: Top Clients =====
+const c3=echarts.init(document.getElementById('ch3'));
+c3.setOption({tooltip:{formatter:p=>`${p.name}: $${(p.value/1e6).toFixed(1)}M`},grid:{top:10,right:10,bottom:8,left:100},
+xAxis:{type:'value',axisLabel:{fontSize:8,formatter:v=>(v/1e6).toFixed(0)+'M'}},
+yAxis:{type:'category',data:['Logíst. Sudtrans','Sulo Chile','Alvaro Silva','DYC','Agunsa','Sitrans','Medlog','Vanadium','Nestlé'],axisLabel:{fontSize:8,fontFamily:'Montserrat'},inverse:true},
+series:[{type:'bar',data:[1.77,2.66,2.06,6.96,10.63,15.39,17.97,21.70,94.97].map(v=>v*1e6),barWidth:14,itemStyle:{borderRadius:[0,4,4,0],color:function(p){return p.dataIndex===8?'#0071e3':p.dataIndex>=6?'#34c759':'#86868b'}},label:{show:true,position:'right',fontSize:8,fontFamily:'Montserrat',fontWeight:600,formatter:p=>'$'+(p.value/1e6).toFixed(1)+'M'}}]
+});
+window.addEventListener('resize',()=>{c1.resize();c3.resize()});
+
+// ===== DEPOSITOS TABLE =====
+const deps=[
+{n:26002410,g:'IN',f:'27-06-2026',h:'13:00',cl:'NESTLÉ CHILE S.A.',co:'MRSU9798135',tp:'40HC',se:'ML-CL0594277',cd:'RAFAEL GRANADILLO',pa:'JZGX59',e:'EN DEPOSITO'},
+{n:26002409,g:'IN',f:'27-06-2026',h:'12:58',cl:'NESTLÉ CHILE S.A.',co:'MRSU9797340',tp:'40HC',se:'ML-CL0594272',cd:'DIEGO ZARAZOLA',pa:'JYPW85',e:'EN DEPOSITO'},
+{n:26002408,g:'IN',f:'27-06-2026',h:'12:12',cl:'NESTLÉ CHILE S.A.',co:'MRSU8215296',tp:'40HC',se:'ML-CL0594279',cd:'ESTEBAN SANDOVAL',pa:'FZTG61',e:'EN DEPOSITO'},
+{n:26002407,g:'IN',f:'27-06-2026',h:'11:48',cl:'NESTLÉ CHILE S.A.',co:'MRSU9749634',tp:'40HC',se:'ML-CL0594214',cd:'RAFAEL GRANADILLO',pa:'',e:'EN DEPOSITO'},
+{n:26002406,g:'IN',f:'27-06-2026',h:'11:50',cl:'NESTLÉ CHILE S.A.',co:'MRSU9966291',tp:'40HC',se:'ML-CL0594213',cd:'DIEGO ZARAZOLA',pa:'',e:'EN DEPOSITO'},
+{n:26002405,g:'IN',f:'27-06-2026',h:'11:40',cl:'NESTLÉ CHILE S.A.',co:'GAOU7661908',tp:'40HC',se:'ML-CL0594217',cd:'ESTEBAN SANDOVAL',pa:'FZTG61',e:'EN DEPOSITO'},
+{n:26002338,g:'OUT',f:'23-06-2026',h:'09:15',cl:'NESTLÉ CHILE S.A.',co:'CAAU4687363',tp:'40HC',se:'SNG0514228',cd:'CARLOS PEÑA',pa:'CHRY68',e:'EN RUTA A CLIENTE'},
+{n:26002251,g:'OUT',f:'18-06-2026',h:'08:30',cl:'NESTLÉ CHILE S.A.',co:'CMAU9878408',tp:'40HC',se:'ML-CL059410',cd:'JORGE SILVA',pa:'FGSG67',e:'EN RUTA A PUERTO'},
+{n:26002260,g:'OUT',f:'15-06-2026',h:'10:00',cl:'MEDLOG CHILE S.A.',co:'MSNU7284423',tp:'40HC',se:'SNG0512345',cd:'PEDRO GONZÁLEZ',pa:'GWFG23',e:'EN RUTA A CLIENTE'},
 ];
-function rt(d){const bm={IMP:'b-b',EXP:'b-g',VACIO:'b-y'},sm={TERMINADO:'b-g','EN RUTA':'b-b',PLANIFICADO:'b-o'};
-document.getElementById('tb').innerHTML=d.map(f=>`<tr>
-<td class="mono">${f.n}</td><td>${f.f}</td><td><span class="badge ${bm[f.t]||'b-y'}">${f.t}</span></td>
-<td>${f.cl}</td><td class="mono">${f.co}</td><td style="font-size:11px">${f.r}</td><td>${f.cd}</td>
-<td style="font-weight:700">$${(f.v/1000).toFixed(0)}K</td><td><span class="badge ${sm[f.e]||'b-y'}">${f.e}</span></td>
+function rd(d){const gm={IN:'bg2',OUT:'bo'},sm={'EN DEPOSITO':'bo','EN RUTA A CLIENTE':'bb','EN RUTA A PUERTO':'bpu'};
+document.getElementById('tbd').innerHTML=d.map(r=>`<tr>
+<td class="mo">${r.n}</td><td><span class="b ${gm[r.g]}">${r.g}</span></td><td>${r.f}</td><td>${r.h}</td>
+<td>${r.cl}</td><td class="mo">${r.co}</td><td>${r.tp}</td><td style="font-size:9px">${r.se}</td>
+<td>${r.cd}</td><td class="mo">${r.pa||'-'}</td><td><span class="b ${sm[r.e]||'by'}">${r.e}</span></td>
 </tr>`).join('')}
-rt(fl);
-function ft(){const q=document.getElementById('si').value.toLowerCase();rt(fl.filter(f=>(f.n+'').includes(q)||f.cl.toLowerCase().includes(q)||f.cd.toLowerCase().includes(q)||f.co.toLowerCase().includes(q)))}
+rd(deps);
+function fd(){const q=document.getElementById('sd').value.toLowerCase();rd(deps.filter(r=>r.co.toLowerCase().includes(q)||r.cl.toLowerCase().includes(q)||r.cd.toLowerCase().includes(q)||(r.n+'').includes(q)))}
+
+// ===== FLETES TABLE =====
+const fls=[
+{n:26002421,f:'22-06',t:'VACIO',cl:'VANADIUM',co:'FANU1012337',r:'Hanseatic→Vanadium',cd:'Rafael Granadillo',v:80000,e:'TERMINADO'},
+{n:26002420,f:'27-06',t:'VACIO',cl:'AGUNSA',co:'MRKU6187905',r:'Alcatrans→Contopsa',cd:'Felipe Muñoz',v:160000,e:'PLANIFICADO'},
+{n:26002419,f:'30-06',t:'IMP',cl:'AGUNSA',co:'HLXU8550601',r:'ZEAL→Agunsa SCL',cd:'Andres Trapp',v:240000,e:'PLANIFICADO'},
+{n:26002418,f:'27-06',t:'IMP',cl:'VANADIUM',co:'-',r:'DYC SAI→Vanadium',cd:'Luis Romero',v:220000,e:'PLANIFICADO'},
+{n:26002417,f:'27-06',t:'POR',cl:'PORTEO',co:'CAAU8406130',r:'Medlog→CD Quilicura',cd:'Diego Zarazola',v:0,e:'TERMINADO'},
+{n:26002416,f:'26-06',t:'IMP',cl:'NESTLÉ',co:'MRSU9966291',r:'ZEAL→Nestlé Macul',cd:'Esteban Sandoval',v:560000,e:'TERMINADO'},
+{n:26002415,f:'26-06',t:'IMP',cl:'NESTLÉ',co:'GAOU7661908',r:'ZEAL→Nestlé Macul',cd:'Rafael Granadillo',v:560000,e:'TERMINADO'},
+{n:26002414,f:'26-06',t:'EXP',cl:'NESTLÉ',co:'MRSU9966291',r:'Nestlé→TPS',cd:'Diego Zarazola',v:380000,e:'FACTURADO'},
+{n:26002413,f:'26-06',t:'EXP',cl:'MEDLOG',co:'CMAU9878408',r:'Medlog→TPS',cd:'Jorge Silva',v:350000,e:'TERMINADO'},
+{n:26002412,f:'25-06',t:'IMP',cl:'SITRANS',co:'TCLU7891234',r:'STI→Sitrans',cd:'Carlos Peña',v:290000,e:'TERMINADO'},
+];
+function rf(d){const bm={IMP:'bb',EXP:'bg2',VACIO:'by',POR:'bo',LOC:'bpu'},sm={TERMINADO:'bg2','EN RUTA':'bb',PLANIFICADO:'bo',FACTURADO:'bpu',PAGADO:'bg2',ANULADO:'br'};
+document.getElementById('tbf').innerHTML=d.map(f=>`<tr>
+<td class="mo">${f.n}</td><td>${f.f}</td><td><span class="b ${bm[f.t]||'by'}">${f.t}</span></td>
+<td>${f.cl}</td><td class="mo">${f.co}</td><td style="font-size:10px">${f.r}</td><td>${f.cd}</td>
+<td style="font-weight:700">${f.v>0?'$'+(f.v/1000).toFixed(0)+'K':'-'}</td><td><span class="b ${sm[f.e]||'by'}">${f.e}</span></td>
+</tr>`).join('')}
+rf(fls);
+function ff(){const q=document.getElementById('sf2').value.toLowerCase();rf(fls.filter(f=>(f.n+'').includes(q)||f.cl.toLowerCase().includes(q)||f.cd.toLowerCase().includes(q)||f.co.toLowerCase().includes(q)))}
 </script>
 </body>
 </html>
