@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Todocontenedor</title>
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="images/logo.jfif" alt="Logo">
+                <div>
+                    <h2>Todocontenedor</h2>
+                    <small>Sistema de Gestión</small>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Principal</div>
+                    <a href="dashboard.html" class="sidebar-item active">
+                        <i class="fas fa-chart-pie"></i> Dashboard
+                    </a>
+                    <a href="#" class="sidebar-item" onclick="goTo('fletes')">
+                        <i class="fas fa-truck"></i> Servicios / Fletes
+                    </a>
+                    <a href="#" class="sidebar-item" onclick="goTo('monitoreo')">
+                        <i class="fas fa-satellite-dish"></i> Monitoreo GPS
+                    </a>
+                    <a href="#" class="sidebar-item" onclick="goTo('depositos')">
+                        <i class="fas fa-warehouse"></i> Depósito
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Comercial</div>
+                    <button class="sidebar-item" onclick="toggleSubmenu('clientesSub')">
+                        <i class="fas fa-user-tie"></i> Clientes
+                        <i class="fas fa-chevron-down" style="margin-left:auto;font-size:10px;opacity:0.5"></i>
+                    </button>
+                    <div class="sidebar-submenu" id="clientesSub">
+                        <a href="#" class="sidebar-item" onclick="goTo('clientes')"><i class="fas fa-building"></i> Clientes</a>
+                        <a href="#" class="sidebar-item" onclick="goTo('subclientes')"><i class="fas fa-users"></i> Subclientes</a>
+                        <a href="#" class="sidebar-item" onclick="goTo('tarifas')"><i class="fas fa-file-invoice-dollar"></i> Tarifas</a>
+                    </div>
+
+                    <button class="sidebar-item" onclick="toggleSubmenu('contaSub')">
+                        <i class="fas fa-calculator"></i> Contabilidad
+                        <i class="fas fa-chevron-down" style="margin-left:auto;font-size:10px;opacity:0.5"></i>
+                    </button>
+                    <div class="sidebar-submenu" id="contaSub">
+                        <a href="#" class="sidebar-item" onclick="goTo('facturador')"><i class="fas fa-file-invoice"></i> Facturación</a>
+                        <a href="#" class="sidebar-item" onclick="goTo('libro_ventas')"><i class="fas fa-book"></i> Libro de Ventas</a>
+                        <a href="#" class="sidebar-item" onclick="goTo('libro_banco')"><i class="fas fa-university"></i> Libro Banco</a>
+                        <a href="#" class="sidebar-item" onclick="goTo('registro_pagamento')"><i class="fas fa-money-check"></i> Pagos</a>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">Operaciones</div>
+                    <button class="sidebar-item" onclick="toggleSubmenu('transporteSub')">
+                        <i class="fas fa-truck-moving"></i> Transporte
+                        <i class="fas fa-chevron-down" style="margin-left:auto;font-size:10px;opacity:0.5"></i>
+                    </button>
+                    <div class="sidebar-submenu" id="transporteSub">
+                        <a href="#" class="sidebar-item" onclick="goTo('vehiculos')"><i class="fas fa-car"></i> Vehículos</a>
+                        <a href="#" class="sidebar-item" onclick="goTo('ramplas')"><i class="fas fa-trailer"></i> Ramplas</a>
+                        <a href="#" class="sidebar-item" onclick="goTo('control_combustible')"><i class="fas fa-gas-pump"></i> Combustible</a>
+                    </div>
+
+                    <button class="sidebar-item" onclick="toggleSubmenu('rrhhSub')">
+                        <i class="fas fa-people-group"></i> Recursos Humanos
+                        <i class="fas fa-chevron-down" style="margin-left:auto;font-size:10px;opacity:0.5"></i>
+                    </button>
+                    <div class="sidebar-submenu" id="rrhhSub">
+                        <a href="#" class="sidebar-item" onclick="goTo('mantenedor_rr_ficha_personal')"><i class="fas fa-id-card"></i> Personal</a>
+                        <a href="#" class="sidebar-item" onclick="goTo('comisiones')"><i class="fas fa-coins"></i> Comisiones</a>
+                    </div>
+
+                    <a href="#" class="sidebar-item" onclick="goTo('indicadores')">
+                        <i class="fas fa-chart-bar"></i> Indicadores
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="avatar" id="userAvatar">OV</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Oscar Vásquez</div>
+                        <div class="user-role" id="userRole">GESTION</div>
+                    </div>
+                    <button onclick="logout()" style="background:none;border:none;color:var(--text-sidebar-muted);cursor:pointer;font-size:16px" title="Cerrar sesión">
+                        <i class="fas fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div style="display:flex;align-items:center;gap:12px">
+                    <button class="btn-mobile-menu" onclick="toggleSidebar()" style="display:none;background:none;border:none;font-size:20px;cursor:pointer">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="topbar-title">Dashboard</h1>
+                </div>
+                <div class="topbar-actions">
+                    <span class="topbar-date" id="topbarDate"></span>
+                    <button class="btn btn-secondary btn-sm" onclick="loadDashboard()">
+                        <i class="fas fa-rotate"></i> Actualizar
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- KPI Cards -->
+                <div class="kpi-grid" id="kpiGrid">
+                    <div class="kpi-card animate-in">
+                        <div class="kpi-icon blue"><i class="fas fa-truck"></i></div>
+                        <div class="kpi-label">Fletes esta semana</div>
+                        <div class="kpi-value" id="kpiFletes">—</div>
+                        <div class="kpi-change" id="kpiFletesChange"></div>
+                    </div>
+                    <div class="kpi-card animate-in">
+                        <div class="kpi-icon green"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="kpi-label">Ventas semana</div>
+                        <div class="kpi-value" id="kpiVentas">—</div>
+                        <div class="kpi-change" id="kpiVentasChange"></div>
+                    </div>
+                    <div class="kpi-card animate-in">
+                        <div class="kpi-icon orange"><i class="fas fa-car"></i></div>
+                        <div class="kpi-label">Vehículos activos</div>
+                        <div class="kpi-value" id="kpiVehiculos">—</div>
+                    </div>
+                    <div class="kpi-card animate-in">
+                        <div class="kpi-icon purple"><i class="fas fa-users"></i></div>
+                        <div class="kpi-label">Clientes activos</div>
+                        <div class="kpi-value" id="kpiClientes">—</div>
+                    </div>
+                    <div class="kpi-card animate-in">
+                        <div class="kpi-icon teal"><i class="fas fa-box"></i></div>
+                        <div class="kpi-label">Ticket promedio</div>
+                        <div class="kpi-value" id="kpiTicket">—</div>
+                    </div>
+                    <div class="kpi-card animate-in">
+                        <div class="kpi-icon red"><i class="fas fa-people-carry-box"></i></div>
+                        <div class="kpi-label">Personal</div>
+                        <div class="kpi-value" id="kpiPersonal">—</div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="chart-grid">
+                    <div class="chart-card animate-in">
+                        <div class="chart-card-title">Fletes por día</div>
+                        <div class="chart-card-subtitle">IMP / EXP / Otros — Semana actual</div>
+                        <div class="chart-container" id="chartFletes"></div>
+                    </div>
+                    <div class="chart-card animate-in">
+                        <div class="chart-card-title">Ventas por día</div>
+                        <div class="chart-card-subtitle">Acumulado semanal en CLP</div>
+                        <div class="chart-container" id="chartVentas"></div>
+                    </div>
+                </div>
+
+                <!-- GPS Map -->
+                <div class="chart-card animate-in" style="margin-bottom:28px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                        <div>
+                            <div class="chart-card-title"><i class="fas fa-satellite-dish" style="color:var(--accent);margin-right:6px"></i>Monitoreo GPS — Flota en tiempo real</div>
+                            <div class="chart-card-subtitle">Integración Wialon — Posición actual de vehículos</div>
+                        </div>
+                        <a href="https://hosting.wialon.com" target="_blank" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-external-link-alt"></i> Abrir Wialon
+                        </a>
+                    </div>
+                    <div class="map-container" id="gpsMap">
+                        <div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;color:var(--text-secondary)">
+                            <i class="fas fa-map-location-dot" style="font-size:48px;color:var(--accent);opacity:0.5"></i>
+                            <p style="font-size:14px">Mapa GPS — Requiere integración con API Wialon</p>
+                            <p style="font-size:12px">Se mostrará la posición en tiempo real de los 72 vehículos</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Fletes Table -->
+                <div class="table-card animate-in">
+                    <div class="table-header">
+                        <h3 class="table-title">Últimos fletes</h3>
+                        <div class="table-actions">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Buscar flete..." id="searchFletes" oninput="filterFletes()">
+                            </div>
+                            <button class="btn btn-primary btn-sm" onclick="goTo('fletes')">
+                                <i class="fas fa-plus"></i> Nuevo flete
+                            </button>
+                        </div>
+                    </div>
+                    <div style="overflow-x:auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>N° Flete</th>
+                                    <th>Fecha</th>
+                                    <th>Tipo</th>
+                                    <th>Cliente</th>
+                                    <th>Contenedor</th>
+                                    <th>Conductor</th>
+                                    <th>Valor</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fletesTableBody">
+                                <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-secondary)">Cargando fletes...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
