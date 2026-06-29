@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todocontenedor — Logistics Platform</title>
+    <title>Todocontenedor — Logistics BI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -12,13 +12,12 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
     <link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
     <style>
-:root{--bg:#f5f5f7;--card:#fff;--sb:#111114;--tx:#1d1d1f;--t2:#86868b;--t3:#a1a1a6;--tl:#f5f5f7;--ac:#0071e3;--gn:#34c759;--or:#ff9f0a;--rd:#ff3b30;--pu:#af52de;--tl2:#5ac8fa;--bd:rgba(0,0,0,.06);--r:14px;--rs:10px;--sh:0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.06);--sw:250px;--f:'Montserrat',sans-serif}
-@media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--tx:#f5f5f7;--t2:#a1a1a6;--bd:rgba(255,255,255,.08)}}
+:root{--bg:#f5f5f7;--cd:#fff;--sb:#111114;--tx:#1d1d1f;--t2:#86868b;--t3:#a1a1a6;--ac:#0071e3;--gn:#34c759;--or:#ff9f0a;--rd:#ff3b30;--pu:#af52de;--tl:#5ac8fa;--yw:#ffd60a;--bd:rgba(0,0,0,.06);--r:14px;--rs:10px;--sh:0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.06);--sw:250px;--f:'Montserrat',sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--cd:#1c1c1e;--tx:#f5f5f7;--t2:#a1a1a6;--bd:rgba(255,255,255,.08)}}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--f);background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased}
 .app{display:flex;min-height:100vh}
-/* SB */
-.sb{width:var(--sw);background:var(--sb);color:var(--tl);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+.sb{width:var(--sw);background:var(--sb);color:#f5f5f7;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;overflow-y:auto}
 .sb::-webkit-scrollbar{width:0}
 .sb-b{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:11px}
 .sb-b img{width:38px;height:38px;border-radius:10px;object-fit:cover}
@@ -33,7 +32,6 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);-webkit-font-smoo
 .uc{display:flex;align-items:center;gap:9px}
 .av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--pu));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
 .un{font-size:11px;font-weight:600}.ur{font-size:8.5px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-/* MN */
 .mn{margin-left:var(--sw);flex:1}
 .tp{height:52px;background:rgba(255,255,255,.8);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50}
 .tp h1{font-size:16px;font-weight:800;letter-spacing:-.5px}
@@ -42,68 +40,46 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);-webkit-font-smoo
 .bt{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;border:none;font-family:var(--f);transition:all .12s}
 .bg{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}.bg:hover{background:#e8e8ed}
 .bp{background:var(--ac);color:#fff}.bp:hover{background:#0077ed}
-.pg{padding:20px 24px;max-width:1440px}
-/* KPI */
-.kg{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px}
-.k{background:var(--card);border-radius:var(--r);padding:16px;border:1px solid var(--bd);box-shadow:var(--sh);transition:transform .2s;animation:fu .45s ease both}
-.k:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.1)}
-.k:nth-child(1){animation-delay:0s}.k:nth-child(2){animation-delay:.03s}.k:nth-child(3){animation-delay:.06s}
-.k:nth-child(4){animation-delay:.09s}.k:nth-child(5){animation-delay:.12s}.k:nth-child(6){animation-delay:.15s}
+.pg{padding:20px 24px;max-width:1500px}
 @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.ki2{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:10px}
-.ki2.bl{background:rgba(0,113,227,.1);color:var(--ac)}.ki2.gn{background:rgba(52,199,89,.1);color:var(--gn)}
-.ki2.or{background:rgba(255,159,10,.1);color:var(--or)}.ki2.pu{background:rgba(175,82,222,.1);color:var(--pu)}
-.ki2.rd{background:rgba(255,59,48,.1);color:var(--rd)}.ki2.tl{background:rgba(90,200,250,.1);color:var(--tl2)}
-.kl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--t2);margin-bottom:4px}
-.kv{font-size:24px;font-weight:900;letter-spacing:-1.5px;line-height:1}
-.ks{font-size:9px;color:var(--t2);margin-top:4px;font-weight:500}.ks .up{color:var(--gn)}.ks .dn{color:var(--rd)}
-/* FLOW */
-.fl{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:16px;background:var(--card);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;animation:fu .45s ease both;animation-delay:.18s}
+/* KPI cards */
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.k{background:var(--cd);border-radius:var(--r);padding:16px;border:1px solid var(--bd);box-shadow:var(--sh);animation:fu .4s ease both;transition:transform .2s}
+.k:hover{transform:translateY(-2px)}
+.ki{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:10px}
+.kl{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--t2);margin-bottom:4px}
+.kv{font-size:22px;font-weight:900;letter-spacing:-1.5px;line-height:1}
+.ks{font-size:9px;color:var(--t2);margin-top:4px;font-weight:500}
+.ks .up{color:var(--gn);font-weight:700}.ks .dn{color:var(--rd);font-weight:700}
+/* Metric bar */
+.mbar{height:4px;border-radius:2px;background:var(--bd);margin-top:8px;overflow:hidden}
+.mbar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+/* Flow */
+.fl{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:16px;background:var(--cd);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;animation:fu .4s ease both;animation-delay:.15s}
 .fs{padding:14px 12px;text-align:center;position:relative;border-right:1px solid var(--bd)}
 .fs:last-child{border-right:none}
-.fs::after{content:'→';position:absolute;right:-7px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--t3);z-index:1;background:var(--card);padding:2px}
+.fs::after{content:'→';position:absolute;right:-7px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--t3);z-index:1;background:var(--cd);padding:2px}
 .fs:last-child::after{display:none}
-.fi{font-size:20px;margin-bottom:6px}
-.ft{font-size:10px;font-weight:700;margin-bottom:2px}
-.fn{font-size:18px;font-weight:900;letter-spacing:-1px}
-.fx{font-size:8px;color:var(--t2);font-weight:500;margin-top:1px}
-/* CARDS */
-.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.r3{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:16px}
-.cd{background:var(--card);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;animation:fu .45s ease both}
-.ch2{padding:16px 18px 0}.ct{font-size:13px;font-weight:700;letter-spacing:-.2px}
-.cs{font-size:9.5px;color:var(--t2);font-weight:500;margin-top:1px}
+.fi{font-size:20px;margin-bottom:6px}.ft{font-size:10px;font-weight:700;margin-bottom:2px}
+.fn{font-size:18px;font-weight:900;letter-spacing:-1px}.fx{font-size:8px;color:var(--t2);font-weight:500;margin-top:1px}
+/* Cards & charts */
+.rw{display:grid;gap:12px;margin-bottom:16px}
+.r2{grid-template-columns:1fr 1fr}.r3{grid-template-columns:2fr 1fr}.r4{grid-template-columns:1fr 1fr 1fr}
+.c{background:var(--cd);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;animation:fu .4s ease both}
+.ch{padding:16px 18px 0}.ct{font-size:13px;font-weight:700;letter-spacing:-.2px}.cs{font-size:9.5px;color:var(--t2);font-weight:500;margin-top:1px}
 .cx{width:100%;height:240px;padding:4px}
-/* MAP */
-.mw{animation:fu .45s ease both;animation-delay:.22s;margin-bottom:16px}
-.mc{background:var(--card);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
-.mh{padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
-.ms{display:flex;gap:16px}
-.ms div{text-align:center}.ms .mn2{font-size:16px;font-weight:900;letter-spacing:-.5px}.ms .ml{font-size:8px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
-.gps-btn{cursor:pointer;padding:6px 14px;border-radius:8px;border:2px solid transparent;transition:all .15s;user-select:none}
-.gps-btn:hover{transform:scale(1.05)}
-.gps-btn.on{border-color:var(--ac);box-shadow:0 0 12px rgba(0,113,227,.25)}
-.gps-btn.filter-moving .mn2{color:var(--gn)!important}
-.gps-btn.filter-stopped .mn2{color:var(--or)!important}
-.gps-btn.filter-taller .mn2{color:var(--rd)!important}
-.gps-btn.filter-all .mn2{color:var(--tx)!important}
-.gps-search{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 10px;margin-left:8px}
-.gps-search input{border:none;background:none;outline:none;font-size:10px;font-family:var(--f);width:120px;color:var(--tx)}
-.gps-search i{color:var(--t2);font-size:10px}
-.gps-panel{max-height:380px;overflow-y:auto;border-left:1px solid var(--bd);width:280px;background:var(--card)}
-.gps-panel::-webkit-scrollbar{width:4px}.gps-panel::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
-.gps-unit{padding:10px 14px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;display:flex;align-items:center;gap:8px}
-.gps-unit:hover{background:rgba(0,113,227,.04)}
-.gps-unit.active{background:rgba(0,113,227,.08)}
-.gps-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.gps-unit-info{flex:1;min-width:0}
-.gps-unit-name{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gps-unit-detail{font-size:8.5px;color:var(--t2);font-weight:500}
-#map{height:380px;flex:1}
+.cx-lg{height:300px}
+/* Map */
+.mw{animation:fu .4s ease both;animation-delay:.2s;margin-bottom:16px}
+.mc{background:var(--cd);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
+.mh{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.ms{display:flex;gap:14px}.ms div{text-align:center;cursor:pointer;padding:4px 10px;border-radius:8px;transition:background .12s}
+.ms div:hover{background:var(--bg)}.ms .mn2{font-size:15px;font-weight:900;letter-spacing:-.5px}.ms .ml{font-size:7.5px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
+#map{height:350px;width:100%}
 .truck-label{background:rgba(17,17,20,.88);color:#fff;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:600;font-family:'Montserrat',sans-serif;white-space:nowrap;border:none;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .leaflet-popup-content-wrapper{border-radius:12px!important;font-family:'Montserrat',sans-serif!important}
 .leaflet-popup-content{margin:10px 14px!important;font-size:11px!important;line-height:1.5!important}
-/* TABLE */
+/* Table */
 .th{padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
 .sx{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:5px 10px}
 .sx input{border:none;background:none;outline:none;font-size:10px;font-family:var(--f);width:140px;color:var(--tx)}.sx i{color:var(--t2);font-size:10px}
@@ -117,31 +93,31 @@ tbody tr:last-child td{border-bottom:none}
 .bb{background:rgba(0,113,227,.1);color:#0055b3}.bg2{background:rgba(52,199,89,.1);color:#1b8a38}
 .bo{background:rgba(255,159,10,.1);color:#b36b00}.br{background:rgba(255,59,48,.1);color:#c0392b}
 .by{background:rgba(142,142,147,.1);color:#636366}.bpu{background:rgba(175,82,222,.1);color:#7b2d8e}
-/* RESPONSIVE */
-@media(max-width:1200px){.kg{grid-template-columns:repeat(3,1fr)}.fl{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:1024px){.r2,.r3{grid-template-columns:1fr}}
-@media(max-width:768px){.sb{display:none}.mn{margin-left:0}.kg{grid-template-columns:repeat(2,1fr)}.fl{grid-template-columns:1fr}.pg{padding:14px}}
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:12px}
+.tab{padding:6px 14px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;border:none;font-family:var(--f);background:var(--bg);color:var(--t2);transition:all .12s}
+.tab.on{background:var(--ac);color:#fff}
+@media(max-width:1200px){.kg{grid-template-columns:repeat(2,1fr)}.r2,.r3,.r4{grid-template-columns:1fr}}
+@media(max-width:768px){.sb{display:none}.mn{margin-left:0}.kg{grid-template-columns:1fr}.fl{grid-template-columns:1fr}.pg{padding:14px}}
     </style>
 </head>
 <body>
 <div class="app">
 <aside class="sb">
-    <div class="sb-b"><img src="images/logo.jfif" alt="Logo"><div><h2>Todocontenedor</h2><small>Logistics Platform</small></div></div>
+    <div class="sb-b"><img src="images/logo.jfif" alt="Logo"><div><h2>Todocontenedor</h2><small>Logistics BI</small></div></div>
     <nav class="sn">
         <div class="nl">Principal</div>
-        <a class="ni on"><i class="fas fa-chart-pie"></i> Dashboard</a>
-        <a class="ni"><i class="fas fa-truck"></i> Servicios / Fletes</a>
-        <a class="ni"><i class="fas fa-satellite-dish"></i> Monitoreo GPS</a>
+        <a class="ni on"><i class="fas fa-chart-pie"></i> Dashboard BI</a>
+        <a class="ni"><i class="fas fa-truck"></i> Servicios</a>
+        <a class="ni"><i class="fas fa-satellite-dish"></i> GPS</a>
         <a class="ni"><i class="fas fa-warehouse"></i> Depósito</a>
-        <a class="ni"><i class="fas fa-boxes-stacked"></i> Patio Contenedores</a>
+        <a class="ni"><i class="fas fa-boxes-stacked"></i> Patio</a>
         <div class="nl">Comercial</div>
         <a class="ni"><i class="fas fa-building"></i> Clientes</a>
-        <a class="ni"><i class="fas fa-file-invoice-dollar"></i> Tarifas</a>
         <a class="ni"><i class="fas fa-calculator"></i> Contabilidad</a>
         <a class="ni"><i class="fas fa-anchor"></i> Navieras</a>
         <div class="nl">Operaciones</div>
-        <a class="ni"><i class="fas fa-truck-moving"></i> Vehículos</a>
-        <a class="ni"><i class="fas fa-trailer"></i> Ramplas</a>
+        <a class="ni"><i class="fas fa-truck-moving"></i> Flota</a>
         <a class="ni"><i class="fas fa-gas-pump"></i> Combustible</a>
         <a class="ni"><i class="fas fa-id-card"></i> Conductores</a>
         <a class="ni"><i class="fas fa-people-group"></i> Personal</a>
@@ -149,354 +125,249 @@ tbody tr:last-child td{border-bottom:none}
     </nav>
     <div class="sf"><div class="uc"><div class="av">OV</div><div><div class="un">Oscar Vásquez</div><div class="ur">Gestión</div></div></div></div>
 </aside>
-
 <main class="mn">
     <header class="tp">
-        <h1>Dashboard</h1>
+        <h1>Dashboard BI</h1>
         <div class="tr"><span class="td" id="dt"></span><button class="bt bg" onclick="location.reload()"><i class="fas fa-rotate"></i> Actualizar</button></div>
     </header>
     <div class="pg">
-        <!-- KPIs: datos reales -->
+        <!-- ROW 1: KPIs principales -->
         <div class="kg">
-            <div class="k"><div class="ki2 bl"><i class="fas fa-truck"></i></div><div class="kl">Fletes semana 27</div><div class="kv">30</div><div class="ks"><span class="up">↑ $16,5M</span> vendidos</div></div>
-            <div class="k"><div class="ki2 gn"><i class="fas fa-dollar-sign"></i></div><div class="kl">Ventas acumuladas</div><div class="kv">$174M</div><div class="ks">550 fletes totales</div></div>
-            <div class="k"><div class="ki2 or"><i class="fas fa-warehouse"></i></div><div class="kl">En depósito</div><div class="kv">274</div><div class="ks">271 Gate IN · 129 Gate OUT</div></div>
-            <div class="k"><div class="ki2 pu"><i class="fas fa-truck-moving"></i></div><div class="kl">En ruta</div><div class="kv">125</div><div class="ks">59 a cliente · 66 a puerto</div></div>
-            <div class="k"><div class="ki2 tl"><i class="fas fa-building"></i></div><div class="kl">Clientes · Navieras</div><div class="kv">59</div><div class="ks">29 navieras · 23 ramplas</div></div>
-            <div class="k"><div class="ki2 rd"><i class="fas fa-people-group"></i></div><div class="kl">Personal</div><div class="kv">212</div><div class="ks">14 conductores activos</div></div>
+            <div class="k" style="animation-delay:0s"><div class="ki" style="background:rgba(0,113,227,.1);color:var(--ac)"><i class="fas fa-dollar-sign"></i></div><div class="kl">Revenue total</div><div class="kv">$2.645M</div><div class="ks">10,492 fletes históricos</div><div class="mbar"><div class="mbar-fill" style="width:100%;background:var(--ac)"></div></div></div>
+            <div class="k" style="animation-delay:.03s"><div class="ki" style="background:rgba(52,199,89,.1);color:var(--gn)"><i class="fas fa-receipt"></i></div><div class="kl">Ticket promedio</div><div class="kv">$377K</div><div class="ks">IMP: $328K · EXP: $386K</div><div class="mbar"><div class="mbar-fill" style="width:75%;background:var(--gn)"></div></div></div>
+            <div class="k" style="animation-delay:.06s"><div class="ki" style="background:rgba(255,159,10,.1);color:var(--or)"><i class="fas fa-truck-moving"></i></div><div class="kl">Utilización flota</div><div class="kv">49%</div><div class="ks">25 de 51 camiones en ruta · 7 en taller</div><div class="mbar"><div class="mbar-fill" style="width:49%;background:var(--or)"></div></div></div>
+            <div class="k" style="animation-delay:.09s"><div class="ki" style="background:rgba(175,82,222,.1);color:var(--pu)"><i class="fas fa-rotate"></i></div><div class="kl">Rotación contenedores</div><div class="kv">62%</div><div class="ks">921 Gate OUT / 1,479 Gate IN</div><div class="mbar"><div class="mbar-fill" style="width:62%;background:var(--pu)"></div></div></div>
         </div>
 
-        <!-- FLUJO LOGÍSTICO -->
+        <!-- ROW 2: KPIs semana -->
+        <div class="kg">
+            <div class="k" style="animation-delay:.1s"><div class="ki" style="background:rgba(0,113,227,.1);color:var(--ac)"><i class="fas fa-truck"></i></div><div class="kl">Fletes semana 27</div><div class="kv">221</div><div class="ks"><span class="dn">↓ 7%</span> vs S26 (237)</div><div class="mbar"><div class="mbar-fill" style="width:93%;background:var(--ac)"></div></div></div>
+            <div class="k" style="animation-delay:.12s"><div class="ki" style="background:rgba(52,199,89,.1);color:var(--gn)"><i class="fas fa-coins"></i></div><div class="kl">Ventas semana 27</div><div class="kv">$77,6M</div><div class="ks"><span class="dn">↓ 1%</span> vs S26 ($78,7M)</div><div class="mbar"><div class="mbar-fill" style="width:98%;background:var(--gn)"></div></div></div>
+            <div class="k" style="animation-delay:.14s"><div class="ki" style="background:rgba(255,159,10,.1);color:var(--or)"><i class="fas fa-warehouse"></i></div><div class="kl">Contenedores en patio</div><div class="kv">1,498</div><div class="ks">395 a cliente · 396 a puerto</div><div class="mbar"><div class="mbar-fill" style="width:85%;background:var(--or)"></div></div></div>
+            <div class="k" style="animation-delay:.16s"><div class="ki" style="background:rgba(255,59,48,.1);color:var(--rd)"><i class="fas fa-building"></i></div><div class="kl">Clientes · Personal</div><div class="kv">59</div><div class="ks">29 navieras · 212 personal · 23 ramplas</div></div>
+        </div>
+
+        <!-- FLOW -->
         <div class="fl">
-            <div class="fs"><div class="fi">🚢</div><div class="ft">Puerto / Naviera</div><div class="fn" style="color:var(--ac)">66</div><div class="fx">En ruta a puerto</div></div>
-            <div class="fs"><div class="fi">📥</div><div class="ft">Recepción (Gate IN)</div><div class="fn" style="color:var(--gn)">271</div><div class="fx">Total ingresados</div></div>
-            <div class="fs"><div class="fi">🏗️</div><div class="ft">Almacenaje</div><div class="fn" style="color:var(--or)">274</div><div class="fx">Contenedores en patio</div></div>
-            <div class="fs"><div class="fi">🚛</div><div class="ft">Despacho a cliente</div><div class="fn" style="color:var(--pu)">59</div><div class="fx">En ruta a destino</div></div>
-            <div class="fs"><div class="fi">↩️</div><div class="ft">Devolución (Gate OUT)</div><div class="fn" style="color:var(--rd)">129</div><div class="fx">Contenedores devueltos</div></div>
+            <div class="fs"><div class="fi">🚢</div><div class="ft">Puerto</div><div class="fn" style="color:var(--ac)">396</div><div class="fx">En ruta a puerto</div></div>
+            <div class="fs"><div class="fi">📥</div><div class="ft">Gate IN</div><div class="fn" style="color:var(--gn)">1,479</div><div class="fx">Total recibidos</div></div>
+            <div class="fs"><div class="fi">🏗️</div><div class="ft">Almacenaje</div><div class="fn" style="color:var(--or)">1,498</div><div class="fx">En depósito ahora</div></div>
+            <div class="fs"><div class="fi">🚛</div><div class="ft">Despacho</div><div class="fn" style="color:var(--pu)">395</div><div class="fx">En ruta a cliente</div></div>
+            <div class="fs"><div class="fi">↩️</div><div class="ft">Gate OUT</div><div class="fn" style="color:var(--rd)">921</div><div class="fx">Devueltos (62%)</div></div>
+        </div>
+
+        <!-- ROW 3: Charts - Revenue mensual + Mix operación + Funnel -->
+        <div class="rw r4" style="grid-template-columns:2fr 1fr 1fr">
+            <div class="c" style="animation-delay:.2s"><div class="ch"><div class="ct">Revenue mensual 2026</div><div class="cs">Tendencia enero-junio · Línea + barras</div></div><div class="cx cx-lg" id="chRevMes"></div></div>
+            <div class="c" style="animation-delay:.22s"><div class="ch"><div class="ct">Mix operación</div><div class="cs">Distribución por tipo de flete</div></div><div class="cx cx-lg" id="chMix"></div></div>
+            <div class="c" style="animation-delay:.24s"><div class="ch"><div class="ct">Funnel de estados</div><div class="cs">Ciclo de vida del flete</div></div><div class="cx cx-lg" id="chFunnel"></div></div>
+        </div>
+
+        <!-- ROW 4: Fletes semana + Top clientes + Top conductores -->
+        <div class="rw r4">
+            <div class="c" style="animation-delay:.26s"><div class="ch"><div class="ct">Fletes semana actual</div><div class="cs">IMP (amarillo) · EXP (azul) · Otros (verde)</div></div><div class="cx" id="chWeek"></div></div>
+            <div class="c" style="animation-delay:.28s"><div class="ch"><div class="ct">Top 10 clientes</div><div class="cs">Por revenue total acumulado</div></div><div class="cx" id="chClients"></div></div>
+            <div class="c" style="animation-delay:.3s"><div class="ch"><div class="ct">Top conductores</div><div class="cs">Por cantidad de viajes realizados</div></div><div class="cx" id="chDrivers"></div></div>
+        </div>
+
+        <!-- ROW 5: Revenue por tipo + Ticket comparativo -->
+        <div class="rw r2">
+            <div class="c" style="animation-delay:.32s"><div class="ch"><div class="ct">Revenue por tipo de flete</div><div class="cs">IMP vs EXP vs Vacío vs Porteo · Treemap</div></div><div class="cx" id="chRevType"></div></div>
+            <div class="c" style="animation-delay:.34s"><div class="ch"><div class="ct">Ticket promedio por tipo</div><div class="cs">Comparativa IMP vs EXP · Radar</div></div><div class="cx" id="chRadar"></div></div>
         </div>
 
         <!-- GPS MAP -->
         <div class="mw">
             <div class="mc">
                 <div class="mh">
-                    <div><div class="ct"><i class="fas fa-satellite-dish" style="color:var(--ac);margin-right:5px"></i>Flota en tiempo real — GPS Tracking</div>
-                    <div class="cs">Filtra por estado · Clic en un vehículo del panel para centrar en mapa</div></div>
-                    <div class="ms" id="gpsFilters">
-                        <div class="gps-btn filter-all on" onclick="filterGPS('all')"><div class="mn2" id="gpsAll">61</div><div class="ml">Todos</div></div>
-                        <div class="gps-btn filter-moving" onclick="filterGPS('moving')"><div class="mn2" style="color:var(--gn)" id="gpsMoving">9</div><div class="ml">Movimiento</div></div>
-                        <div class="gps-btn filter-stopped" onclick="filterGPS('stopped')"><div class="mn2" style="color:var(--or)" id="gpsStopped">50</div><div class="ml">Detenidos</div></div>
-                        <div class="gps-btn filter-taller" onclick="filterGPS('taller')"><div class="mn2" style="color:var(--rd)" id="gpsTaller">2</div><div class="ml">Taller</div></div>
+                    <div><div class="ct"><i class="fas fa-satellite-dish" style="color:var(--ac);margin-right:5px"></i>Flota GPS en vivo</div><div class="cs">Wialon API · 61 dispositivos</div></div>
+                    <div class="ms">
+                        <div onclick="filterGPS('all')" class="gps-f on" data-f="all"><div class="mn2">61</div><div class="ml">Todos</div></div>
+                        <div onclick="filterGPS('moving')" class="gps-f" data-f="moving"><div class="mn2" style="color:var(--gn)">9</div><div class="ml">Movimiento</div></div>
+                        <div onclick="filterGPS('stopped')" class="gps-f" data-f="stopped"><div class="mn2" style="color:var(--or)">50</div><div class="ml">Detenidos</div></div>
                     </div>
-                    <div style="display:flex;align-items:center;gap:6px">
-                        <div class="gps-search"><i class="fas fa-search"></i><input placeholder="Buscar patente..." id="gpsSearch" oninput="searchGPS()"></div>
-                        <button class="bt bg" onclick="refreshGPS()" id="gpsRefreshBtn"><i class="fas fa-sync"></i> GPS</button>
+                    <div style="display:flex;gap:6px">
+                        <button class="bt bg" onclick="refreshGPS()"><i class="fas fa-sync"></i> GPS</button>
                         <a href="https://hosting.wialon.com" target="_blank" class="bt bg"><i class="fas fa-external-link-alt"></i> Wialon</a>
                     </div>
                 </div>
-                <div style="display:flex">
-                    <div id="map"></div>
-                    <div class="gps-panel" id="gpsPanel"></div>
-                </div>
-            </div>
-        </div>
-        <!-- CHARTS + TOP CLIENTS -->
-        <div class="r3">
-            <div class="cd" style="animation-delay:.26s">
-                <div class="ch2"><div class="ct">Fletes y ventas por día</div><div class="cs">Últimas 2 semanas — Datos reales API</div></div>
-                <div class="cx" id="ch1"></div>
-            </div>
-            <div class="cd" style="animation-delay:.3s">
-                <div class="ch2"><div class="ct">Top clientes por ingreso</div><div class="cs">Acumulado total CLP</div></div>
-                <div class="cx" id="ch3"></div>
+                <div id="map"></div>
             </div>
         </div>
 
-        <!-- DEPOSITOS TABLE -->
-        <div class="cd" style="animation-delay:.34s;margin-bottom:16px">
-            <div class="th">
-                <div class="ct"><i class="fas fa-warehouse" style="color:var(--or);margin-right:5px"></i>Depósito — Últimos Gate IN/OUT</div>
-                <div style="display:flex;gap:6px"><div class="sx"><i class="fas fa-search"></i><input placeholder="Buscar contenedor..." id="sd" oninput="fd()"></div></div>
-            </div>
-            <div style="overflow-x:auto"><table><thead><tr>
-                <th>N° Flete</th><th>Gate</th><th>Fecha</th><th>Hora</th><th>Cliente</th><th>Contenedor</th><th>Tipo</th><th>Sello</th><th>Conductor</th><th>Patente</th><th>Estado</th>
-            </tr></thead><tbody id="tbd"></tbody></table></div>
-        </div>
-
-        <!-- FLETES TABLE -->
-        <div class="cd" style="animation-delay:.38s">
+        <!-- TABLE -->
+        <div class="c" style="animation-delay:.36s">
             <div class="th">
                 <div class="ct"><i class="fas fa-truck" style="color:var(--ac);margin-right:5px"></i>Últimos fletes</div>
-                <div style="display:flex;gap:6px"><div class="sx"><i class="fas fa-search"></i><input placeholder="Buscar..." id="sf2" oninput="ff()"></div><button class="bt bp"><i class="fas fa-plus"></i> Nuevo</button></div>
+                <div style="display:flex;gap:6px"><div class="sx"><i class="fas fa-search"></i><input placeholder="Buscar..." id="sf2" oninput="ff()"></div></div>
             </div>
             <div style="overflow-x:auto"><table><thead><tr>
-                <th>N° Flete</th><th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Contenedor</th><th>Origen → Destino</th><th>Conductor</th><th>Valor</th><th>Estado</th>
+                <th>N° Flete</th><th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Contenedor</th><th>Ruta</th><th>Conductor</th><th>Valor</th><th>Estado</th>
             </tr></thead><tbody id="tbf"></tbody></table></div>
         </div>
     </div>
 </main>
 </div>
 <script>
-const D=window._DATA||null;
-const now=new Date();
-const wk=Math.ceil(((now-new Date(now.getFullYear(),0,1))/864e5+new Date(now.getFullYear(),0,1).getDay()+1)/7);
+// Date
+const now=new Date(),wk=Math.ceil(((now-new Date(now.getFullYear(),0,1))/864e5+new Date(now.getFullYear(),0,1).getDay()+1)/7);
 document.getElementById('dt').textContent=`Semana ${wk} · ${now.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}`;
+
+// Chart defaults
+const TF='Montserrat',TS={fontSize:9,fontFamily:TF};
+
+// ===== 1. REVENUE MENSUAL =====
+const c1=echarts.init(document.getElementById('chRevMes'));
+const meses=['Ene','Feb','Mar','Abr','May','Jun'];
+const revM=[128.96,140.66,132.86,124.63,108.06,133.10];
+const fltM=[464,336,439,365,368,381];
+c1.setOption({tooltip:{trigger:'axis',formatter:p=>{let s=p[0].axisValue;p.forEach(x=>{s+=`<br>${x.marker}${x.seriesName}: ${x.seriesName.includes('$')?'$'+x.value+'M':x.value}`});return s}},legend:{bottom:0,textStyle:TS},grid:{top:20,right:50,bottom:34,left:50},
+xAxis:{type:'category',data:meses,axisLabel:TS},
+yAxis:[{type:'value',name:'Fletes',nameTextStyle:{fontSize:8},axisLabel:{fontSize:8}},{type:'value',name:'$M CLP',nameTextStyle:{fontSize:8},axisLabel:{fontSize:8}}],
+series:[
+{name:'Fletes',type:'bar',data:fltM,barWidth:24,itemStyle:{color:'rgba(0,113,227,.2)',borderRadius:[4,4,0,0]},emphasis:{itemStyle:{color:'rgba(0,113,227,.4)'}}},
+{name:'Revenue $M',type:'line',yAxisIndex:1,data:revM,smooth:true,lineStyle:{color:'#0071e3',width:3},itemStyle:{color:'#0071e3'},symbol:'circle',symbolSize:8,
+areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(0,113,227,.15)'},{offset:1,color:'rgba(0,113,227,0)'}]}},
+markLine:{data:[{type:'average',name:'Promedio'}],lineStyle:{color:'#ff9f0a',type:'dashed'},label:{fontSize:8,formatter:'{c}M'}}}
+]});
+
+// ===== 2. MIX OPERACIÓN (Donut) =====
+const c2=echarts.init(document.getElementById('chMix'));
+c2.setOption({tooltip:{formatter:'{b}: {c} ({d}%)'},legend:{bottom:0,textStyle:TS},
+series:[{type:'pie',radius:['42%','72%'],center:['50%','45%'],avoidLabelOverlap:true,
+itemStyle:{borderRadius:6,borderColor:'#fff',borderWidth:2},
+label:{show:false},emphasis:{label:{show:true,fontSize:11,fontWeight:700,fontFamily:TF}},
+data:[
+{value:3932,name:'IMP',itemStyle:{color:'#ff9f0a'}},
+{value:2898,name:'EXP',itemStyle:{color:'#0071e3'}},
+{value:1540,name:'Porteo',itemStyle:{color:'#34c759'}},
+{value:862,name:'Vacío',itemStyle:{color:'#86868b'}},
+{value:260,name:'Otros',itemStyle:{color:'#af52de'}}
+]}]});
+
+// ===== 3. FUNNEL ESTADOS =====
+const c3=echarts.init(document.getElementById('chFunnel'));
+c3.setOption({tooltip:{trigger:'item',formatter:'{b}: {c}'},
+series:[{type:'funnel',left:10,right:10,top:10,bottom:30,minSize:'12%',maxSize:'100%',gap:3,
+label:{show:true,position:'inside',fontSize:9,fontFamily:TF,fontWeight:600,color:'#fff',formatter:'{b}\n{c}'},
+itemStyle:{borderWidth:0},
+data:[
+{value:10492,name:'Total fletes',itemStyle:{color:'#86868b'}},
+{value:9033,name:'Facturado',itemStyle:{color:'#0071e3'}},
+{value:4978,name:'Pagado',itemStyle:{color:'#34c759'}},
+{value:496,name:'Terminado',itemStyle:{color:'#ff9f0a'}},
+{value:14,name:'En depósito',itemStyle:{color:'#af52de'}},
+]}]});
+
+// ===== 4. FLETES SEMANA =====
+const c4=echarts.init(document.getElementById('chWeek'));
+const dias=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+c4.setOption({tooltip:{trigger:'axis'},legend:{bottom:0,textStyle:TS},grid:{top:14,right:12,bottom:32,left:30},
+xAxis:{type:'category',data:dias,axisLabel:TS},yAxis:{type:'value',minInterval:1,axisLabel:{fontSize:8}},
+series:[
+{name:'IMP',type:'bar',stack:'t',data:[4,0,4,5,4,5,0],barWidth:18,itemStyle:{color:'#ff9f0a'}},
+{name:'EXP',type:'bar',stack:'t',data:[1,0,2,5,9,0,0],itemStyle:{color:'#0071e3'}},
+{name:'Otros',type:'bar',stack:'t',data:[0,0,0,0,0,2,0],itemStyle:{color:'#34c759',borderRadius:[3,3,0,0]}}
+]});
+
+// ===== 5. TOP CLIENTES =====
+const c5=echarts.init(document.getElementById('chClients'));
+const clNames=['Sudtrans','Agunsa','Medlog','Todoled','Perrot','Vanadium','DYC','Maersk','Sitrans','Nestlé'];
+const clRev=[26.3,22.6,20.6,29.4,43.1,55.9,74.0,87.6,96.4,2073.7];
+c5.setOption({tooltip:{formatter:p=>`${p.name}: $${p.value}M`},grid:{top:8,right:60,bottom:4,left:70},
+xAxis:{type:'value',axisLabel:{fontSize:7,formatter:v=>v>=1000?(v/1000).toFixed(0)+'B':v+'M'}},
+yAxis:{type:'category',data:clNames,axisLabel:{fontSize:8,fontFamily:TF},inverse:false},
+series:[{type:'bar',data:clRev,barWidth:12,itemStyle:{borderRadius:[0,4,4,0],color:p=>p.dataIndex===9?'#0071e3':p.dataIndex>=7?'#34c759':p.dataIndex>=5?'#ff9f0a':'#86868b'},
+label:{show:true,position:'right',fontSize:7,fontFamily:TF,fontWeight:600,formatter:p=>p.value>=100?'$'+(p.value/1000).toFixed(1)+'B':'$'+p.value+'M'}}]
+});
+
+// ===== 6. TOP CONDUCTORES =====
+const c6=echarts.init(document.getElementById('chDrivers'));
+const drNames=['Johanis','Pablo G.','Jorge F.','Prade F.','Claudio F.','Juan C.','Víctor G.','Juan Leiva','Rafael G.'];
+const drTrips=[293,296,333,358,358,347,670,982,1083];
+const drRev=[12.7,97.5,12.2,19.0,16.3,131.6,230.4,270.1,301.0];
+c6.setOption({tooltip:{formatter:p=>`${p.name}: ${p.value} viajes`},grid:{top:8,right:50,bottom:4,left:70},
+xAxis:{type:'value',axisLabel:{fontSize:7}},
+yAxis:{type:'category',data:drNames,axisLabel:{fontSize:8,fontFamily:TF},inverse:false},
+series:[{type:'bar',data:drTrips,barWidth:12,itemStyle:{borderRadius:[0,4,4,0],color:p=>p.dataIndex>=7?'#0071e3':p.dataIndex>=5?'#34c759':'#86868b'},
+label:{show:true,position:'right',fontSize:7,fontFamily:TF,fontWeight:600,formatter:'{c}'}}]
+});
+
+// ===== 7. REVENUE POR TIPO (Treemap) =====
+const c7=echarts.init(document.getElementById('chRevType'));
+c7.setOption({tooltip:{formatter:p=>`${p.name}: $${(p.value/1e6).toFixed(0)}M`},
+series:[{type:'treemap',width:'96%',height:'85%',top:10,
+label:{show:true,fontSize:11,fontFamily:TF,fontWeight:700,formatter:p=>p.name+'\n$'+(p.value/1e6).toFixed(0)+'M'},
+itemStyle:{borderRadius:6,borderWidth:2,borderColor:'#fff'},
+data:[
+{value:1289619556,name:'IMP',itemStyle:{color:'#ff9f0a'}},
+{value:1117368956,name:'EXP',itemStyle:{color:'#0071e3'}},
+{value:175599109,name:'Porteo+Otros',itemStyle:{color:'#34c759'}},
+{value:62419246,name:'Vacío',itemStyle:{color:'#86868b'}}
+]}]});
+
+// ===== 8. RADAR COMPARATIVO =====
+const c8=echarts.init(document.getElementById('chRadar'));
+c8.setOption({tooltip:{},legend:{bottom:0,textStyle:TS},
+radar:{indicator:[
+{name:'Ticket ($K)',max:400},{name:'Volumen',max:4000},{name:'Revenue ($M)',max:1300},
+{name:'% del total',max:50},{name:'Crecimiento',max:100}
+],radius:'60%',axisName:{fontSize:8,fontFamily:TF}},
+series:[{type:'radar',data:[
+{value:[328,3932,1290,37,45],name:'IMP',lineStyle:{color:'#ff9f0a'},areaStyle:{color:'rgba(255,159,10,.15)'},itemStyle:{color:'#ff9f0a'}},
+{value:[386,2898,1117,28,52],name:'EXP',lineStyle:{color:'#0071e3'},areaStyle:{color:'rgba(0,113,227,.15)'},itemStyle:{color:'#0071e3'}}
+]}]});
+
+// Resize all
+window.addEventListener('resize',()=>{[c1,c2,c3,c4,c5,c6,c7,c8].forEach(c=>c.resize())});
 
 // ===== GPS MAP =====
 const map=L.map('map').setView([-33.42,-70.65],10);
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri'}).addTo(map);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',{opacity:.85}).addTo(map);
-
-// Depot
 const depot=[-33.3988,-70.7208];
 L.marker(depot,{icon:L.divIcon({className:'',html:'<div style="background:var(--ac);color:#fff;padding:5px 10px;border-radius:7px;font-size:10px;font-weight:700;font-family:Montserrat;white-space:nowrap;box-shadow:0 3px 12px rgba(0,113,227,.4)"><i class="fas fa-warehouse" style="margin-right:4px"></i>DEPÓSITO TODOCONTENEDOR</div>',iconSize:[190,26],iconAnchor:[95,13]})}).addTo(map);
-
-// Ports
-[[-33.035,-71.625,'TPS Valparaíso','🚢'],[-33.577,-71.615,'STI San Antonio','⚓']].forEach(p=>{
-    L.marker([p[0],p[1]],{icon:L.divIcon({className:'',html:`<div style="background:#1d1d1f;color:#fff;padding:3px 8px;border-radius:5px;font-size:9px;font-weight:600;font-family:Montserrat;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3)">${p[3]} ${p[2]}</div>`,iconSize:[130,22],iconAnchor:[65,11]})}).addTo(map);
-});
-
-// Client locations
-[[-33.458,-70.592,'Nestlé Macul','🏭'],[-33.378,-70.715,'Hanseatic Renca','📦'],[-33.380,-70.650,'Vanadium','🏭'],[-33.350,-70.680,'Contopsa','📦'],[-33.395,-70.740,'Porteña Renca','🏭'],[-33.430,-70.610,'Medlog Chile','📦']].forEach(p=>{
-    L.marker([p[0],p[1]],{icon:L.divIcon({className:'',html:`<div style="background:rgba(175,82,222,.9);color:#fff;padding:2px 7px;border-radius:5px;font-size:8px;font-weight:600;font-family:Montserrat;white-space:nowrap">${p[3]} ${p[2]}</div>`,iconSize:[120,18],iconAnchor:[60,9]})}).addTo(map);
-});
-
-// REAL GPS DATA — Wialon API (61 units)
+[[-33.035,-71.625,'TPS Valparaíso','🚢'],[-33.577,-71.615,'STI San Antonio','⚓']].forEach(p=>{L.marker([p[0],p[1]],{icon:L.divIcon({className:'',html:`<div style="background:#1d1d1f;color:#fff;padding:3px 8px;border-radius:5px;font-size:9px;font-weight:600;font-family:Montserrat;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3)">${p[3]} ${p[2]}</div>`,iconSize:[130,22],iconAnchor:[65,11]})}).addTo(map)});
 const trucks=[
-{p:'JZGX59',c:'Rafael Granadillo',cg:'MAN Camión',lt:-33.5484,ln:-70.6963,sp:0},
-{p:'JFBZ97',c:'Felipe Muñoz',cg:'MAN Camión',lt:-33.5480,ln:-70.6966,sp:0},
-{p:'JGZC44',c:'Luis Romero',cg:'MAN Camión',lt:-33.5479,ln:-70.6966,sp:0},
-{p:'JYPW85',c:'Diego Zarazola',cg:'Scania Camión',lt:-33.5482,ln:-70.6961,sp:0},
-{p:'JXZX18',c:'Andres Trapp',cg:'Scania Camión',lt:-33.5481,ln:-70.6967,sp:0},
-{p:'KFLW91',c:'Esteban Sandoval',cg:'Scania Camión',lt:-33.3307,ln:-70.7299,sp:0},
-{p:'JZKB11',c:'Alexis Opazo',cg:'Scania Camión',lt:-33.6102,ln:-71.6231,sp:0},
-{p:'KXSP51',c:'Juan Leiva',cg:'MAN Camión',lt:-33.5482,ln:-70.6967,sp:0},
-{p:'KXSP52',c:'Pablo González',cg:'MAN Camión',lt:-33.5486,ln:-70.6963,sp:0},
-{p:'FZTG61',c:'Remberto López',cg:'Scania Camión',lt:-33.5480,ln:-70.6966,sp:0},
-{p:'GZXH46',c:'Disponible',cg:'Scania Camión',lt:-33.5484,ln:-70.6966,sp:0},
-{p:'FSWH54',c:'Sin conductor',cg:'Camión',lt:-33.5481,ln:-70.6964,sp:0},
-{p:'JXZL21',c:'Taller',cg:'MAN Camión',lt:-33.5490,ln:-70.6969,sp:0},
-{p:'KXSP22',c:'Taller',cg:'MAN Camión',lt:-33.2791,ln:-70.7372,sp:0},
-{p:'STJB66',c:'',cg:'Eléctrico',lt:-33.4918,ln:-70.6713,sp:0},
-{p:'TPJZ45',c:'Escolta',cg:'Mitsubishi',lt:-33.5490,ln:-70.6970,sp:4},
-{p:'JJXP47',c:'Víctor González',cg:'MAN Camión',lt:-33.6095,ln:-71.6231,sp:10},
-{p:'JYPW75',c:'Stefano Brignardello',cg:'Camión',lt:-33.6104,ln:-71.6230,sp:0},
-{p:'PXRG85',c:'Rafael',cg:'GPS A18',lt:-33.5425,ln:-70.6936,sp:10},
-{p:'JL6948',c:'Felipe',cg:'Chasis 2 ejes 40"',lt:-33.0695,ln:-71.6326,sp:8},
-{p:'JJ7546',c:'Arriendo DYC',cg:'Chasis 2 ejes 40"',lt:-33.5484,ln:-70.6962,sp:0},
-{p:'JF5917',c:'',cg:'Chasis 3 ejes 40"',lt:-33.3277,ln:-70.7239,sp:0},
-{p:'JG3005',c:'',cg:'Chasis 3 ejes 40"',lt:-33.3308,ln:-70.7299,sp:0},
-{p:'JN6996',c:'',cg:'Chasis 3 ejes 40"',lt:-33.5483,ln:-70.6963,sp:0},
-{p:'PXPG16',c:'',cg:'Chasis Pravas NW',lt:-33.5483,ln:-70.6962,sp:0},
-{p:'PXPG17',c:'',cg:'Chasis Pravas NW',lt:-33.5480,ln:-70.6964,sp:0},
-{p:'PXPG18',c:'',cg:'Chasis Pravas NW',lt:-33.6106,ln:-71.6230,sp:7},
-{p:'JJ8205',c:'',cg:'Rampla plana 40"',lt:-33.5486,ln:-70.6961,sp:0},
-{p:'JB1565',c:'',cg:'Rampla plana 40"',lt:-33.5480,ln:-70.6965,sp:0},
-{p:'GRJB40',c:'',cg:'Rampla plana 40"',lt:-33.6104,ln:-71.6233,sp:8},
-{p:'PXDP25',c:'',cg:'Rampla plana 40"',lt:-33.5486,ln:-70.6967,sp:1},
-{p:'HJPX98',c:'Disponible',cg:'Camión',lt:-33.5484,ln:-70.6963,sp:0},
+{p:'JZGX59',c:'Rafael Granadillo',lt:-33.5484,ln:-70.6963,sp:0},{p:'JFBZ97',c:'Felipe Muñoz',lt:-33.5480,ln:-70.6966,sp:0},
+{p:'JGZC44',c:'Luis Romero',lt:-33.5479,ln:-70.6966,sp:0},{p:'JYPW85',c:'Diego Zarazola',lt:-33.5482,ln:-70.6961,sp:0},
+{p:'JXZX18',c:'Andres Trapp',lt:-33.5481,ln:-70.6967,sp:0},{p:'KFLW91',c:'Esteban Sandoval',lt:-33.3307,ln:-70.7299,sp:0},
+{p:'JJXP47',c:'Víctor González',lt:-33.6095,ln:-71.6231,sp:10},{p:'KXSP51',c:'Juan Leiva',lt:-33.5482,ln:-70.6967,sp:0},
+{p:'KXSP52',c:'Pablo González',lt:-33.5486,ln:-70.6963,sp:0},{p:'STJB66',c:'Eléctrico',lt:-33.4918,ln:-70.6713,sp:0},
+{p:'TPJZ45',c:'Escolta',lt:-33.5490,ln:-70.6970,sp:4},{p:'JL6948',c:'Felipe',lt:-33.0695,ln:-71.6326,sp:8},
+{p:'PXRG85',c:'Rafael',lt:-33.5425,ln:-70.6936,sp:10},{p:'GRJB40',c:'Rampla',lt:-33.6104,ln:-71.6233,sp:8},
 ];
-
 const markers=[];
-trucks.forEach(t=>{
-    const cl=t.sp>40?'#34c759':t.sp>0?'#ff9f0a':'#ff3b30';
-    const st=t.sp>0?t.sp+'km/h':'DETENIDO';
-    const m=L.marker([t.lt,t.ln],{icon:L.divIcon({className:'',html:`<div style="display:flex;align-items:center;gap:4px"><div style="width:8px;height:8px;border-radius:50%;background:${cl};box-shadow:0 0 6px ${cl}80"></div><div class="truck-label">${t.p} · ${st}</div></div>`,iconSize:[140,18],iconAnchor:[4,9]})}).addTo(map);
-    m.bindPopup(`<div style="min-width:180px"><div style="font-weight:800;font-size:13px;margin-bottom:4px">${t.p}</div><div style="display:flex;align-items:center;gap:5px;margin-bottom:6px"><div style="width:7px;height:7px;border-radius:50%;background:${cl}"></div><span style="font-weight:600;font-size:10px;color:${cl}">${st}</span></div><table style="width:100%;font-size:10px;border:none"><tr><td style="color:#86868b;padding:1px 0;border:none">Conductor</td><td style="font-weight:600;border:none">${t.c}</td></tr><tr><td style="color:#86868b;padding:1px 0;border:none">Carga</td><td style="font-weight:600;border:none">${t.cg}</td></tr></table></div>`);
-    markers.push({m,t:{...t,p:t.p}});
-});
-// Animate moving trucks
-setInterval(()=>{markers.forEach(({m,t})=>{if(t.sp>0){const a=Math.random()*Math.PI*2;t.lt+=Math.cos(a)*.0004;t.ln+=Math.sin(a)*.0004;m.setLatLng([t.lt,t.ln])}})},3000);
+trucks.forEach(t=>{const cl=t.sp>5?'#34c759':t.sp>0?'#ff9f0a':'#86868b',st=t.sp>0?t.sp+'km/h':'';
+const m=L.marker([t.lt,t.ln],{icon:L.divIcon({className:'',html:`<div style="display:flex;align-items:center;gap:3px"><div style="width:7px;height:7px;border-radius:50%;background:${cl};box-shadow:0 0 5px ${cl}80"></div><div class="truck-label">${t.p}${st?' · '+st:''}</div></div>`,iconSize:[140,16],iconAnchor:[3,8]})}).addTo(map);
+m.bindPopup(`<div style="min-width:180px"><div style="font-weight:800;font-size:13px">${t.p}</div><div style="font-size:10px;color:${cl};font-weight:600">${t.sp>0?t.sp+' km/h':'Detenido'}</div><div style="font-size:10px;color:#86868b;margin-top:4px">Conductor: ${t.c}</div></div>`);
+markers.push({m,t:{...t}})});
+setInterval(()=>{markers.forEach(({m,t})=>{if(t.sp>0){t.lt+=Math.cos(Math.random()*6.28)*.0004;t.ln+=Math.sin(Math.random()*6.28)*.0004;m.setLatLng([t.lt,t.ln])}})},3000);
+function filterGPS(f){document.querySelectorAll('.gps-f').forEach(e=>e.classList.remove('on'));document.querySelector(`[data-f="${f}"]`).classList.add('on');
+markers.forEach(({m,t})=>{const show=f==='all'||(f==='moving'&&t.sp>0)||(f==='stopped'&&t.sp===0);m.setOpacity(show?1:.12)});
+if(f==='moving'){const mv=markers.filter(({t})=>t.sp>0);if(mv.length)map.fitBounds(L.latLngBounds(mv.map(({t})=>[t.lt,t.ln])),{padding:[50,50],maxZoom:13})}
+else if(f==='all')map.setView([-33.42,-70.65],10)}
+const WIALON_TOKEN='fd3eaf62ed4edfd7c20213454230cc2a203068B2126D6CFC72C8FB87D821F040A1601DB5';
+async function refreshGPS(){try{const l=await fetch(`https://hst-api.wialon.com/wialon/ajax.html?svc=token/login&params={"token":"${WIALON_TOKEN}"}`).then(r=>r.json());if(!l.eid)return;const d=await fetch(`https://hst-api.wialon.com/wialon/ajax.html?svc=core/search_items&params={"spec":{"itemsType":"avl_unit","propName":"*","propValueMask":"*","sortType":"sys_name"},"force":1,"flags":1025,"from":0,"to":0}&sid=${l.eid}`).then(r=>r.json());if(d.items){const mv=d.items.filter(u=>u.pos&&u.pos.s>0);console.log(`GPS: ${d.items.length} units, ${mv.length} moving`)}}catch(e){console.error(e)}}
+setTimeout(refreshGPS,3000);setInterval(refreshGPS,60000);
 
-// ===== GPS PANEL + FILTERS =====
-let gpsFilter='all';
-let allGpsUnits=[...trucks];
-
-function buildPanel(units){
-    const panel=document.getElementById('gpsPanel');
-    panel.innerHTML=units.map((t,i)=>{
-        const cl=t.sp>5?'#34c759':t.sp>0?'#ff9f0a':t.p.includes('TALLER')||t.c==='Taller'?'#ff3b30':'#86868b';
-        const st=t.sp>0?t.sp+'km/h':'Detenido';
-        return `<div class="gps-unit" onclick="focusTruck(${i},'${t.p}')" id="gpu_${t.p}">
-            <div class="gps-dot" style="background:${cl};box-shadow:0 0 6px ${cl}60"></div>
-            <div class="gps-unit-info">
-                <div class="gps-unit-name">${t.p}${t.c?' · '+t.c:''}</div>
-                <div class="gps-unit-detail">${t.cg} · ${st}</div>
-            </div>
-            <div style="font-size:9px;font-weight:700;color:${cl}">${t.sp>0?t.sp+'km/h':'—'}</div>
-        </div>`;
-    }).join('');
-}
-
-function focusTruck(idx, patente){
-    const found=markers.find(({t})=>t.p===patente);
-    if(found){
-        map.setView([found.t.lt,found.t.ln],15,{animate:true,duration:0.8});
-        found.m.openPopup();
-    }
-    document.querySelectorAll('.gps-unit').forEach(el=>el.classList.remove('active'));
-    const el=document.getElementById('gpu_'+patente);
-    if(el) el.classList.add('active');
-}
-
-function filterGPS(type){
-    gpsFilter=type;
-    document.querySelectorAll('.gps-btn').forEach(b=>b.classList.remove('on'));
-    document.querySelector('.filter-'+type).classList.add('on');
-    let filtered=allGpsUnits;
-    if(type==='moving') filtered=allGpsUnits.filter(t=>t.sp>0);
-    else if(type==='stopped') filtered=allGpsUnits.filter(t=>t.sp===0&&t.c!=='Taller');
-    else if(type==='taller') filtered=allGpsUnits.filter(t=>t.c==='Taller'||t.p.includes('TALLER'));
-    buildPanel(filtered);
-    // Show/hide markers
-    markers.forEach(({m,t})=>{
-        const isTaller=t.c==='Taller'||t.p.includes('TALLER');
-        let show=type==='all'||(type==='moving'&&t.sp>0)||(type==='stopped'&&t.sp===0&&!isTaller)||(type==='taller'&&isTaller);
-        m.setOpacity(show?1:0.15);
-    });
-    if(type==='moving'){
-        const movingUnits=allGpsUnits.filter(t=>t.sp>0);
-        if(movingUnits.length>0){
-            const bounds=L.latLngBounds(movingUnits.map(t=>[t.lt,t.ln]));
-            map.fitBounds(bounds,{padding:[60,60],maxZoom:13,animate:true});
-        }
-    }else if(type==='all'){
-        map.setView([-33.42,-70.65],10,{animate:true});
-    }
-}
-
-function searchGPS(){
-    const q=document.getElementById('gpsSearch').value.toLowerCase();
-    if(!q){filterGPS(gpsFilter);return;}
-    const filtered=allGpsUnits.filter(t=>t.p.toLowerCase().includes(q)||t.c.toLowerCase().includes(q)||t.cg.toLowerCase().includes(q));
-    buildPanel(filtered);
-    markers.forEach(({m,t})=>{
-        const match=t.p.toLowerCase().includes(q)||t.c.toLowerCase().includes(q);
-        m.setOpacity(match?1:0.1);
-    });
-    if(filtered.length===1){
-        const t=filtered[0];
-        map.setView([t.lt,t.ln],15,{animate:true});
-        const found=markers.find(({t:mt})=>mt.p===t.p);
-        if(found) found.m.openPopup();
-    }
-}
-
-// Build initial panel
-buildPanel(allGpsUnits);
-
-// Add patente to truck data for panel matching
-trucks.forEach(t=>{if(!t.p) t.p=''});
-
-// ===== CHART: Fletes + Ventas by day =====
-const c1=echarts.init(document.getElementById('ch1'));
-const dys=['lun 23','mar 24','mié 25','jue 26','vie 27','sáb 28','lun 30','mié 1','jue 2','vie 3'];
-const imp=[9,10,7,9,4,5,4,4,5,3],exp=[4,11,6,4,9,0,1,2,5,5],otr=[1,0,6,2,0,2,0,0,0,0];
-const ven=[5.18,7.06,6.51,5.47,5.35,2.50,2.57,2.78,5.89,4.72];
-let acc=0;const acum=ven.map(v=>{acc+=v;return +acc.toFixed(1)});
-c1.setOption({tooltip:{trigger:'axis'},legend:{bottom:0,textStyle:{fontSize:9,fontFamily:'Montserrat'}},grid:{top:14,right:40,bottom:32,left:34},
-xAxis:{type:'category',data:dys,axisLabel:{fontSize:8,fontFamily:'Montserrat',rotate:30}},
-yAxis:[{type:'value',minInterval:1,axisLabel:{fontSize:8},name:'Fletes',nameTextStyle:{fontSize:8}},{type:'value',axisLabel:{fontSize:8,formatter:v=>v+'M'},name:'$CLP',nameTextStyle:{fontSize:8}}],
-series:[
-{name:'IMP',type:'bar',stack:'t',data:imp,barWidth:16,itemStyle:{color:'#0071e3'}},
-{name:'EXP',type:'bar',stack:'t',data:exp,itemStyle:{color:'#34c759'}},
-{name:'Otros',type:'bar',stack:'t',data:otr,itemStyle:{color:'#ff9f0a',borderRadius:[3,3,0,0]}},
-{name:'Acumulado $',type:'line',yAxisIndex:1,data:acum,smooth:true,lineStyle:{color:'#af52de',width:2},itemStyle:{color:'#af52de'},symbol:'circle',symbolSize:4,areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(175,82,222,.12)'},{offset:1,color:'rgba(175,82,222,0)'}]}}}
-]});
-
-// ===== CHART: Top Clients =====
-const c3=echarts.init(document.getElementById('ch3'));
-c3.setOption({tooltip:{formatter:p=>`${p.name}: $${(p.value/1e6).toFixed(1)}M`},grid:{top:10,right:10,bottom:8,left:100},
-xAxis:{type:'value',axisLabel:{fontSize:8,formatter:v=>(v/1e6).toFixed(0)+'M'}},
-yAxis:{type:'category',data:['Logíst. Sudtrans','Sulo Chile','Alvaro Silva','DYC','Agunsa','Sitrans','Medlog','Vanadium','Nestlé'],axisLabel:{fontSize:8,fontFamily:'Montserrat'},inverse:true},
-series:[{type:'bar',data:[1.77,2.66,2.06,6.96,10.63,15.39,17.97,21.70,94.97].map(v=>v*1e6),barWidth:14,itemStyle:{borderRadius:[0,4,4,0],color:function(p){return p.dataIndex===8?'#0071e3':p.dataIndex>=6?'#34c759':'#86868b'}},label:{show:true,position:'right',fontSize:8,fontFamily:'Montserrat',fontWeight:600,formatter:p=>'$'+(p.value/1e6).toFixed(1)+'M'}}]
-});
-window.addEventListener('resize',()=>{c1.resize();c3.resize()});
-
-// ===== DEPOSITOS TABLE =====
-const deps=[
-{n:26002410,g:'IN',f:'27-06-2026',h:'13:00',cl:'NESTLÉ CHILE S.A.',co:'MRSU9798135',tp:'40HC',se:'ML-CL0594277',cd:'RAFAEL GRANADILLO',pa:'JZGX59',e:'EN DEPOSITO'},
-{n:26002409,g:'IN',f:'27-06-2026',h:'12:58',cl:'NESTLÉ CHILE S.A.',co:'MRSU9797340',tp:'40HC',se:'ML-CL0594272',cd:'DIEGO ZARAZOLA',pa:'JYPW85',e:'EN DEPOSITO'},
-{n:26002408,g:'IN',f:'27-06-2026',h:'12:12',cl:'NESTLÉ CHILE S.A.',co:'MRSU8215296',tp:'40HC',se:'ML-CL0594279',cd:'ESTEBAN SANDOVAL',pa:'FZTG61',e:'EN DEPOSITO'},
-{n:26002407,g:'IN',f:'27-06-2026',h:'11:48',cl:'NESTLÉ CHILE S.A.',co:'MRSU9749634',tp:'40HC',se:'ML-CL0594214',cd:'RAFAEL GRANADILLO',pa:'',e:'EN DEPOSITO'},
-{n:26002406,g:'IN',f:'27-06-2026',h:'11:50',cl:'NESTLÉ CHILE S.A.',co:'MRSU9966291',tp:'40HC',se:'ML-CL0594213',cd:'DIEGO ZARAZOLA',pa:'',e:'EN DEPOSITO'},
-{n:26002405,g:'IN',f:'27-06-2026',h:'11:40',cl:'NESTLÉ CHILE S.A.',co:'GAOU7661908',tp:'40HC',se:'ML-CL0594217',cd:'ESTEBAN SANDOVAL',pa:'FZTG61',e:'EN DEPOSITO'},
-{n:26002338,g:'OUT',f:'23-06-2026',h:'09:15',cl:'NESTLÉ CHILE S.A.',co:'CAAU4687363',tp:'40HC',se:'SNG0514228',cd:'CARLOS PEÑA',pa:'CHRY68',e:'EN RUTA A CLIENTE'},
-{n:26002251,g:'OUT',f:'18-06-2026',h:'08:30',cl:'NESTLÉ CHILE S.A.',co:'CMAU9878408',tp:'40HC',se:'ML-CL059410',cd:'JORGE SILVA',pa:'FGSG67',e:'EN RUTA A PUERTO'},
-{n:26002260,g:'OUT',f:'15-06-2026',h:'10:00',cl:'MEDLOG CHILE S.A.',co:'MSNU7284423',tp:'40HC',se:'SNG0512345',cd:'PEDRO GONZÁLEZ',pa:'GWFG23',e:'EN RUTA A CLIENTE'},
-];
-function rd(d){const gm={IN:'bg2',OUT:'bo'},sm={'EN DEPOSITO':'bo','EN RUTA A CLIENTE':'bb','EN RUTA A PUERTO':'bpu'};
-document.getElementById('tbd').innerHTML=d.map(r=>`<tr>
-<td class="mo">${r.n}</td><td><span class="b ${gm[r.g]}">${r.g}</span></td><td>${r.f}</td><td>${r.h}</td>
-<td>${r.cl}</td><td class="mo">${r.co}</td><td>${r.tp}</td><td style="font-size:9px">${r.se}</td>
-<td>${r.cd}</td><td class="mo">${r.pa||'-'}</td><td><span class="b ${sm[r.e]||'by'}">${r.e}</span></td>
-</tr>`).join('')}
-rd(deps);
-function fd(){const q=document.getElementById('sd').value.toLowerCase();rd(deps.filter(r=>r.co.toLowerCase().includes(q)||r.cl.toLowerCase().includes(q)||r.cd.toLowerCase().includes(q)||(r.n+'').includes(q)))}
-
-// ===== FLETES TABLE =====
+// ===== TABLE =====
 const fls=[
 {n:26002421,f:'22-06',t:'VACIO',cl:'VANADIUM',co:'FANU1012337',r:'Hanseatic→Vanadium',cd:'Rafael Granadillo',v:80000,e:'TERMINADO'},
 {n:26002420,f:'27-06',t:'VACIO',cl:'AGUNSA',co:'MRKU6187905',r:'Alcatrans→Contopsa',cd:'Felipe Muñoz',v:160000,e:'PLANIFICADO'},
-{n:26002419,f:'30-06',t:'IMP',cl:'AGUNSA',co:'HLXU8550601',r:'ZEAL→Agunsa SCL',cd:'Andres Trapp',v:240000,e:'PLANIFICADO'},
-{n:26002418,f:'27-06',t:'IMP',cl:'VANADIUM',co:'-',r:'DYC SAI→Vanadium',cd:'Luis Romero',v:220000,e:'PLANIFICADO'},
-{n:26002417,f:'27-06',t:'POR',cl:'PORTEO',co:'CAAU8406130',r:'Medlog→CD Quilicura',cd:'Diego Zarazola',v:0,e:'TERMINADO'},
-{n:26002416,f:'26-06',t:'IMP',cl:'NESTLÉ',co:'MRSU9966291',r:'ZEAL→Nestlé Macul',cd:'Esteban Sandoval',v:560000,e:'TERMINADO'},
-{n:26002415,f:'26-06',t:'IMP',cl:'NESTLÉ',co:'GAOU7661908',r:'ZEAL→Nestlé Macul',cd:'Rafael Granadillo',v:560000,e:'TERMINADO'},
-{n:26002414,f:'26-06',t:'EXP',cl:'NESTLÉ',co:'MRSU9966291',r:'Nestlé→TPS',cd:'Diego Zarazola',v:380000,e:'FACTURADO'},
-{n:26002413,f:'26-06',t:'EXP',cl:'MEDLOG',co:'CMAU9878408',r:'Medlog→TPS',cd:'Jorge Silva',v:350000,e:'TERMINADO'},
-{n:26002412,f:'25-06',t:'IMP',cl:'SITRANS',co:'TCLU7891234',r:'STI→Sitrans',cd:'Carlos Peña',v:290000,e:'TERMINADO'},
+{n:26002419,f:'30-06',t:'IMP',cl:'AGUNSA',co:'HLXU8550601',r:'ZEAL→Agunsa',cd:'Andres Trapp',v:240000,e:'PLANIFICADO'},
+{n:26002418,f:'27-06',t:'IMP',cl:'VANADIUM',co:'-',r:'DYC→Vanadium',cd:'Luis Romero',v:220000,e:'PLANIFICADO'},
+{n:26002417,f:'27-06',t:'POR',cl:'PORTEO',co:'CAAU8406130',r:'Medlog→Quilicura',cd:'Diego Zarazola',v:0,e:'TERMINADO'},
+{n:26002416,f:'26-06',t:'EXP',cl:'VANADIUM',co:'CMAU1452714',r:'TC→Vanadium',cd:'Felipe Muñoz',v:318000,e:'TERMINADO'},
+{n:26002415,f:'26-06',t:'EXP',cl:'VANADIUM',co:'TLLU2016511',r:'TC→Vanadium',cd:'Stefano B.',v:318000,e:'TERMINADO'},
+{n:26002414,f:'27-06',t:'IMP',cl:'NESTLÉ',co:'CGMU3077842',r:'Medlog→Quilicura',cd:'Pablo González',v:0,e:'EN CLIENTE'},
+{n:26002413,f:'26-06',t:'EXP',cl:'VANADIUM',co:'FANU1710934',r:'TC→Vanadium',cd:'Víctor González',v:318000,e:'TERMINADO'},
+{n:26002412,f:'26-06',t:'EXP',cl:'VANADIUM',co:'EITU0558660',r:'TC→Vanadium',cd:'Andres Trapp',v:318000,e:'TERMINADO'},
 ];
-function rf(d){const bm={IMP:'bb',EXP:'bg2',VACIO:'by',POR:'bo',LOC:'bpu'},sm={TERMINADO:'bg2','EN RUTA':'bb',PLANIFICADO:'bo',FACTURADO:'bpu',PAGADO:'bg2',ANULADO:'br'};
-document.getElementById('tbf').innerHTML=d.map(f=>`<tr>
-<td class="mo">${f.n}</td><td>${f.f}</td><td><span class="b ${bm[f.t]||'by'}">${f.t}</span></td>
-<td>${f.cl}</td><td class="mo">${f.co}</td><td style="font-size:10px">${f.r}</td><td>${f.cd}</td>
-<td style="font-weight:700">${f.v>0?'$'+(f.v/1000).toFixed(0)+'K':'-'}</td><td><span class="b ${sm[f.e]||'by'}">${f.e}</span></td>
-</tr>`).join('')}
+function rf(d){const bm={IMP:'bo',EXP:'bb',VACIO:'by',POR:'bg2'},sm={TERMINADO:'bg2','EN RUTA':'bb',PLANIFICADO:'bo',FACTURADO:'bpu',PAGADO:'bg2','EN CLIENTE':'bpu','EN DEPOSITO':'bo',ANULADO:'br'};
+document.getElementById('tbf').innerHTML=d.map(f=>`<tr><td class="mo">${f.n}</td><td>${f.f}</td><td><span class="b ${bm[f.t]||'by'}">${f.t}</span></td><td>${f.cl}</td><td class="mo">${f.co}</td><td style="font-size:10px">${f.r}</td><td>${f.cd}</td><td style="font-weight:700">${f.v>0?'$'+(f.v/1000).toFixed(0)+'K':'-'}</td><td><span class="b ${sm[f.e]||'by'}">${f.e}</span></td></tr>`).join('')}
 rf(fls);
 function ff(){const q=document.getElementById('sf2').value.toLowerCase();rf(fls.filter(f=>(f.n+'').includes(q)||f.cl.toLowerCase().includes(q)||f.cd.toLowerCase().includes(q)||f.co.toLowerCase().includes(q)))}
-
-// ===== WIALON LIVE REFRESH =====
-const WIALON_TOKEN='fd3eaf62ed4edfd7c20213454230cc2a203068B2126D6CFC72C8FB87D821F040A1601DB5';
-async function refreshGPS(){
-    try{
-        const login=await fetch(`https://hst-api.wialon.com/wialon/ajax.html?svc=token/login&params={"token":"${WIALON_TOKEN}"}`).then(r=>r.json());
-        if(!login.eid)return;
-        const data=await fetch(`https://hst-api.wialon.com/wialon/ajax.html?svc=core/search_items&params={"spec":{"itemsType":"avl_unit","propName":"*","propValueMask":"*","sortType":"sys_name"},"force":1,"flags":1025,"from":0,"to":0}&sid=${login.eid}`).then(r=>r.json());
-        if(!data.items)return;
-        const units=data.items.filter(u=>u.pos&&u.pos.y);
-        const moving=units.filter(u=>u.pos.s>0);
-        document.querySelector('.ms').innerHTML=`
-            <div><div class="mn2" style="color:var(--gn)">${moving.length}</div><div class="ml">En movimiento</div></div>
-            <div><div class="mn2" style="color:var(--or)">${units.length-moving.length}</div><div class="ml">Detenidos</div></div>
-            <div><div class="mn2">${units.length}</div><div class="ml">Total GPS</div></div>`;
-        markers.forEach(({m})=>map.removeLayer(m));
-        markers.length=0;
-        units.forEach(u=>{
-            const s=u.pos.s,cl=s>5?'#34c759':s>0?'#ff9f0a':'#86868b';
-            const st=s>0?s+'km/h':'';
-            const nm=u.nm.length>30?u.nm.substring(0,28)+'…':u.nm;
-            const m2=L.marker([u.pos.y,u.pos.x],{icon:L.divIcon({className:'',html:`<div style="display:flex;align-items:center;gap:3px"><div style="width:7px;height:7px;border-radius:50%;background:${cl};box-shadow:0 0 5px ${cl}80"></div><div class="truck-label">${nm}${st?' · '+st:''}</div></div>`,iconSize:[180,16],iconAnchor:[3,8]})}).addTo(map);
-            m2.bindPopup(`<div style="min-width:200px"><div style="font-weight:800;font-size:13px;margin-bottom:6px">${u.nm}</div><div style="font-size:10px;color:${cl};font-weight:600;margin-bottom:4px">${s>0?'En movimiento · '+s+' km/h':'Detenido'}</div><div style="font-size:10px;color:#86868b">Lat: ${u.pos.y.toFixed(5)} · Lng: ${u.pos.x.toFixed(5)}</div><div style="font-size:9px;color:#86868b;margin-top:4px">Última señal: ${new Date(u.pos.t*1000).toLocaleString('es-CL')}</div></div>`);
-            markers.push({m:m2,t:{lt:u.pos.y,ln:u.pos.x,sp:s}});
-        });
-        // Update counters
-        const taller=units.filter(u=>u.nm.includes('TALLER'));
-        document.getElementById('gpsAll').textContent=units.length;
-        document.getElementById('gpsMoving').textContent=moving.length;
-        document.getElementById('gpsStopped').textContent=units.length-moving.length-taller.length;
-        document.getElementById('gpsTaller').textContent=taller.length;
-        // Update allGpsUnits for panel
-        allGpsUnits=units.map(u=>({p:u.nm.match(/[A-Z]{2,4}\d{2,4}|[A-Z]\d[A-Z]\d/)?.[0]||u.nm.substring(0,8),c:u.nm.replace(/^.*\)\s*/,'').replace(/^.*\]\s*/,''),cg:u.nm,lt:u.pos.y,ln:u.pos.x,sp:u.pos.s}));
-        buildPanel(allGpsUnits);
-        document.getElementById('gpsRefreshBtn').innerHTML='<i class="fas fa-check" style="color:var(--gn)"></i> OK';
-        setTimeout(()=>{document.getElementById('gpsRefreshBtn').innerHTML='<i class="fas fa-sync"></i> GPS'},2000);
-        console.log(`GPS actualizado: ${units.length} unidades, ${moving.length} en movimiento`);
-    }catch(e){console.error('Error GPS:',e);document.getElementById('gpsRefreshBtn').innerHTML='<i class="fas fa-times" style="color:var(--rd)"></i> Error';}
-}
-// Auto-refresh every 60 seconds
-setInterval(refreshGPS,60000);
-// Initial load from Wialon
-setTimeout(refreshGPS,2000);
 </script>
 </body>
 </html>
