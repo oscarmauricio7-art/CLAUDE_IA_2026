@@ -80,7 +80,26 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);-webkit-font-smoo
 .mh{padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
 .ms{display:flex;gap:16px}
 .ms div{text-align:center}.ms .mn2{font-size:16px;font-weight:900;letter-spacing:-.5px}.ms .ml{font-size:8px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
-#map{height:380px;width:100%}
+.gps-btn{cursor:pointer;padding:6px 14px;border-radius:8px;border:2px solid transparent;transition:all .15s;user-select:none}
+.gps-btn:hover{transform:scale(1.05)}
+.gps-btn.on{border-color:var(--ac);box-shadow:0 0 12px rgba(0,113,227,.25)}
+.gps-btn.filter-moving .mn2{color:var(--gn)!important}
+.gps-btn.filter-stopped .mn2{color:var(--or)!important}
+.gps-btn.filter-taller .mn2{color:var(--rd)!important}
+.gps-btn.filter-all .mn2{color:var(--tx)!important}
+.gps-search{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 10px;margin-left:8px}
+.gps-search input{border:none;background:none;outline:none;font-size:10px;font-family:var(--f);width:120px;color:var(--tx)}
+.gps-search i{color:var(--t2);font-size:10px}
+.gps-panel{max-height:380px;overflow-y:auto;border-left:1px solid var(--bd);width:280px;background:var(--card)}
+.gps-panel::-webkit-scrollbar{width:4px}.gps-panel::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
+.gps-unit{padding:10px 14px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .12s;display:flex;align-items:center;gap:8px}
+.gps-unit:hover{background:rgba(0,113,227,.04)}
+.gps-unit.active{background:rgba(0,113,227,.08)}
+.gps-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.gps-unit-info{flex:1;min-width:0}
+.gps-unit-name{font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gps-unit-detail{font-size:8.5px;color:var(--t2);font-weight:500}
+#map{height:380px;flex:1}
 .truck-label{background:rgba(17,17,20,.88);color:#fff;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:600;font-family:'Montserrat',sans-serif;white-space:nowrap;border:none;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .leaflet-popup-content-wrapper{border-radius:12px!important;font-family:'Montserrat',sans-serif!important}
 .leaflet-popup-content{margin:10px 14px!important;font-size:11px!important;line-height:1.5!important}
@@ -160,31 +179,26 @@ tbody tr:last-child td{border-bottom:none}
         <div class="mw">
             <div class="mc">
                 <div class="mh">
-                    <div><div class="ct"><i class="fas fa-satellite-dish" style="color:var(--ac);margin-right:5px"></i>Flota en tiempo real — GPS Tracking</div><div class="cs">12 camiones en ruta · 20 camiones total · 23 ramplas</div></div>
-                    <div class="ms">
-                        <div><div class="mn2" style="color:var(--gn)">9</div><div class="ml">En movimiento</div></div>
-                        <div><div class="mn2" style="color:var(--or)">48</div><div class="ml">Depósito</div></div>
-                        <div><div class="mn2" style="color:var(--rd)">2</div><div class="ml">Taller</div></div>
-                        <div><div class="mn2">61</div><div class="ml">Total GPS</div></div>
+                    <div><div class="ct"><i class="fas fa-satellite-dish" style="color:var(--ac);margin-right:5px"></i>Flota en tiempo real — GPS Tracking</div>
+                    <div class="cs">Filtra por estado · Clic en un vehículo del panel para centrar en mapa</div></div>
+                    <div class="ms" id="gpsFilters">
+                        <div class="gps-btn filter-all on" onclick="filterGPS('all')"><div class="mn2" id="gpsAll">61</div><div class="ml">Todos</div></div>
+                        <div class="gps-btn filter-moving" onclick="filterGPS('moving')"><div class="mn2" style="color:var(--gn)" id="gpsMoving">9</div><div class="ml">Movimiento</div></div>
+                        <div class="gps-btn filter-stopped" onclick="filterGPS('stopped')"><div class="mn2" style="color:var(--or)" id="gpsStopped">50</div><div class="ml">Detenidos</div></div>
+                        <div class="gps-btn filter-taller" onclick="filterGPS('taller')"><div class="mn2" style="color:var(--rd)" id="gpsTaller">2</div><div class="ml">Taller</div></div>
                     </div>
-                    <a href="https://hosting.wialon.com" target="_blank" class="bt bg"><i class="fas fa-external-link-alt"></i> Wialon</a>
+                    <div style="display:flex;align-items:center;gap:6px">
+                        <div class="gps-search"><i class="fas fa-search"></i><input placeholder="Buscar patente..." id="gpsSearch" oninput="searchGPS()"></div>
+                        <button class="bt bg" onclick="refreshGPS()" id="gpsRefreshBtn"><i class="fas fa-sync"></i> GPS</button>
+                        <a href="https://hosting.wialon.com" target="_blank" class="bt bg"><i class="fas fa-external-link-alt"></i> Wialon</a>
+                    </div>
                 </div>
-                <div id="map"></div>
+                <div style="display:flex">
+                    <div id="map"></div>
+                    <div class="gps-panel" id="gpsPanel"></div>
+                </div>
             </div>
         </div>
-        <!-- GPS Legend -->
-        <div class="cd" style="animation-delay:.24s;margin-bottom:16px;padding:14px 18px">
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-                <div class="ct" style="font-size:12px"><i class="fas fa-info-circle" style="color:var(--ac);margin-right:4px"></i>GPS en vivo — Wialon API · 61 dispositivos conectados</div>
-                <div style="display:flex;gap:16px;font-size:10px;font-weight:600">
-                    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#34c759;margin-right:4px"></span>En movimiento (9)</span>
-                    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff9f0a;margin-right:4px"></span>Detenido en ruta (4)</span>
-                    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#86868b;margin-right:4px"></span>En depósito (48)</span>
-                </div>
-                <button class="bt bg" onclick="refreshGPS()"><i class="fas fa-sync"></i> Refrescar GPS</button>
-            </div>
-        </div>
-
         <!-- CHARTS + TOP CLIENTS -->
         <div class="r3">
             <div class="cd" style="animation-delay:.26s">
@@ -288,9 +302,90 @@ trucks.forEach(t=>{
     const st=t.sp>0?t.sp+'km/h':'DETENIDO';
     const m=L.marker([t.lt,t.ln],{icon:L.divIcon({className:'',html:`<div style="display:flex;align-items:center;gap:4px"><div style="width:8px;height:8px;border-radius:50%;background:${cl};box-shadow:0 0 6px ${cl}80"></div><div class="truck-label">${t.p} · ${st}</div></div>`,iconSize:[140,18],iconAnchor:[4,9]})}).addTo(map);
     m.bindPopup(`<div style="min-width:180px"><div style="font-weight:800;font-size:13px;margin-bottom:4px">${t.p}</div><div style="display:flex;align-items:center;gap:5px;margin-bottom:6px"><div style="width:7px;height:7px;border-radius:50%;background:${cl}"></div><span style="font-weight:600;font-size:10px;color:${cl}">${st}</span></div><table style="width:100%;font-size:10px;border:none"><tr><td style="color:#86868b;padding:1px 0;border:none">Conductor</td><td style="font-weight:600;border:none">${t.c}</td></tr><tr><td style="color:#86868b;padding:1px 0;border:none">Carga</td><td style="font-weight:600;border:none">${t.cg}</td></tr></table></div>`);
-    markers.push({m,t});
+    markers.push({m,t:{...t,p:t.p}});
 });
+// Animate moving trucks
 setInterval(()=>{markers.forEach(({m,t})=>{if(t.sp>0){const a=Math.random()*Math.PI*2;t.lt+=Math.cos(a)*.0004;t.ln+=Math.sin(a)*.0004;m.setLatLng([t.lt,t.ln])}})},3000);
+
+// ===== GPS PANEL + FILTERS =====
+let gpsFilter='all';
+let allGpsUnits=[...trucks];
+
+function buildPanel(units){
+    const panel=document.getElementById('gpsPanel');
+    panel.innerHTML=units.map((t,i)=>{
+        const cl=t.sp>5?'#34c759':t.sp>0?'#ff9f0a':t.p.includes('TALLER')||t.c==='Taller'?'#ff3b30':'#86868b';
+        const st=t.sp>0?t.sp+'km/h':'Detenido';
+        return `<div class="gps-unit" onclick="focusTruck(${i},'${t.p}')" id="gpu_${t.p}">
+            <div class="gps-dot" style="background:${cl};box-shadow:0 0 6px ${cl}60"></div>
+            <div class="gps-unit-info">
+                <div class="gps-unit-name">${t.p}${t.c?' · '+t.c:''}</div>
+                <div class="gps-unit-detail">${t.cg} · ${st}</div>
+            </div>
+            <div style="font-size:9px;font-weight:700;color:${cl}">${t.sp>0?t.sp+'km/h':'—'}</div>
+        </div>`;
+    }).join('');
+}
+
+function focusTruck(idx, patente){
+    const found=markers.find(({t})=>t.p===patente);
+    if(found){
+        map.setView([found.t.lt,found.t.ln],15,{animate:true,duration:0.8});
+        found.m.openPopup();
+    }
+    document.querySelectorAll('.gps-unit').forEach(el=>el.classList.remove('active'));
+    const el=document.getElementById('gpu_'+patente);
+    if(el) el.classList.add('active');
+}
+
+function filterGPS(type){
+    gpsFilter=type;
+    document.querySelectorAll('.gps-btn').forEach(b=>b.classList.remove('on'));
+    document.querySelector('.filter-'+type).classList.add('on');
+    let filtered=allGpsUnits;
+    if(type==='moving') filtered=allGpsUnits.filter(t=>t.sp>0);
+    else if(type==='stopped') filtered=allGpsUnits.filter(t=>t.sp===0&&t.c!=='Taller');
+    else if(type==='taller') filtered=allGpsUnits.filter(t=>t.c==='Taller'||t.p.includes('TALLER'));
+    buildPanel(filtered);
+    // Show/hide markers
+    markers.forEach(({m,t})=>{
+        const isTaller=t.c==='Taller'||t.p.includes('TALLER');
+        let show=type==='all'||(type==='moving'&&t.sp>0)||(type==='stopped'&&t.sp===0&&!isTaller)||(type==='taller'&&isTaller);
+        m.setOpacity(show?1:0.15);
+    });
+    if(type==='moving'){
+        const movingUnits=allGpsUnits.filter(t=>t.sp>0);
+        if(movingUnits.length>0){
+            const bounds=L.latLngBounds(movingUnits.map(t=>[t.lt,t.ln]));
+            map.fitBounds(bounds,{padding:[60,60],maxZoom:13,animate:true});
+        }
+    }else if(type==='all'){
+        map.setView([-33.42,-70.65],10,{animate:true});
+    }
+}
+
+function searchGPS(){
+    const q=document.getElementById('gpsSearch').value.toLowerCase();
+    if(!q){filterGPS(gpsFilter);return;}
+    const filtered=allGpsUnits.filter(t=>t.p.toLowerCase().includes(q)||t.c.toLowerCase().includes(q)||t.cg.toLowerCase().includes(q));
+    buildPanel(filtered);
+    markers.forEach(({m,t})=>{
+        const match=t.p.toLowerCase().includes(q)||t.c.toLowerCase().includes(q);
+        m.setOpacity(match?1:0.1);
+    });
+    if(filtered.length===1){
+        const t=filtered[0];
+        map.setView([t.lt,t.ln],15,{animate:true});
+        const found=markers.find(({t:mt})=>mt.p===t.p);
+        if(found) found.m.openPopup();
+    }
+}
+
+// Build initial panel
+buildPanel(allGpsUnits);
+
+// Add patente to truck data for panel matching
+trucks.forEach(t=>{if(!t.p) t.p=''});
 
 // ===== CHART: Fletes + Ventas by day =====
 const c1=echarts.init(document.getElementById('ch1'));
@@ -384,8 +479,19 @@ async function refreshGPS(){
             m2.bindPopup(`<div style="min-width:200px"><div style="font-weight:800;font-size:13px;margin-bottom:6px">${u.nm}</div><div style="font-size:10px;color:${cl};font-weight:600;margin-bottom:4px">${s>0?'En movimiento · '+s+' km/h':'Detenido'}</div><div style="font-size:10px;color:#86868b">Lat: ${u.pos.y.toFixed(5)} · Lng: ${u.pos.x.toFixed(5)}</div><div style="font-size:9px;color:#86868b;margin-top:4px">Última señal: ${new Date(u.pos.t*1000).toLocaleString('es-CL')}</div></div>`);
             markers.push({m:m2,t:{lt:u.pos.y,ln:u.pos.x,sp:s}});
         });
+        // Update counters
+        const taller=units.filter(u=>u.nm.includes('TALLER'));
+        document.getElementById('gpsAll').textContent=units.length;
+        document.getElementById('gpsMoving').textContent=moving.length;
+        document.getElementById('gpsStopped').textContent=units.length-moving.length-taller.length;
+        document.getElementById('gpsTaller').textContent=taller.length;
+        // Update allGpsUnits for panel
+        allGpsUnits=units.map(u=>({p:u.nm.match(/[A-Z]{2,4}\d{2,4}|[A-Z]\d[A-Z]\d/)?.[0]||u.nm.substring(0,8),c:u.nm.replace(/^.*\)\s*/,'').replace(/^.*\]\s*/,''),cg:u.nm,lt:u.pos.y,ln:u.pos.x,sp:u.pos.s}));
+        buildPanel(allGpsUnits);
+        document.getElementById('gpsRefreshBtn').innerHTML='<i class="fas fa-check" style="color:var(--gn)"></i> OK';
+        setTimeout(()=>{document.getElementById('gpsRefreshBtn').innerHTML='<i class="fas fa-sync"></i> GPS'},2000);
         console.log(`GPS actualizado: ${units.length} unidades, ${moving.length} en movimiento`);
-    }catch(e){console.error('Error GPS:',e)}
+    }catch(e){console.error('Error GPS:',e);document.getElementById('gpsRefreshBtn').innerHTML='<i class="fas fa-times" style="color:var(--rd)"></i> Error';}
 }
 // Auto-refresh every 60 seconds
 setInterval(refreshGPS,60000);
