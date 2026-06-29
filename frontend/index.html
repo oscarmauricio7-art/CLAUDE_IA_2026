@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+<script src="https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 <script src="data/dashboard_full.js"></script>
 <link rel="icon" href="images/favicon-32x32.png" type="image/png">
 <style>
@@ -105,20 +105,20 @@ tbody tr:hover{background:rgba(0,122,255,.02)}
 <div class="sb-b"><img src="images/logo.jfif" alt=""><div><h2>Todocontenedor</h2><small>Control Center</small></div></div>
 <nav class="sn">
 <div class="nl">Control</div>
-<button class="ni on"><i class="fas fa-grid-2"></i> Dashboard BI</button>
-<button class="ni"><i class="fas fa-tower-broadcast"></i> Torre GPS</button>
-<button class="ni"><i class="fas fa-truck"></i> Servicios</button>
-<button class="ni"><i class="fas fa-warehouse"></i> Depósito</button>
+<button class="ni on" onclick="navTo(this,'dashboard')"><i class="fas fa-grid-2"></i> Dashboard BI</button>
+<button class="ni" onclick="navTo(this,'gps')"><i class="fas fa-tower-broadcast"></i> Torre GPS</button>
+<button class="ni" onclick="navTo(this,'table')"><i class="fas fa-truck"></i> Servicios</button>
+<button class="ni" onclick="navTo(this,'flow')"><i class="fas fa-warehouse"></i> Depósito</button>
 <div class="nl">Comercial</div>
-<button class="ni"><i class="fas fa-building"></i> Clientes</button>
-<button class="ni"><i class="fas fa-anchor"></i> Navieras</button>
-<button class="ni"><i class="fas fa-calculator"></i> Contabilidad</button>
+<button class="ni" onclick="navTo(this,'clients')"><i class="fas fa-building"></i> Clientes</button>
+<button class="ni" onclick="navTo(this,'breakdown')"><i class="fas fa-anchor"></i> Navieras</button>
+<button class="ni" onclick="navTo(this,'funnel')"><i class="fas fa-calculator"></i> Contabilidad</button>
 <div class="nl">Flota</div>
-<button class="ni"><i class="fas fa-truck-moving"></i> Vehículos</button>
-<button class="ni"><i class="fas fa-id-card"></i> Conductores</button>
-<button class="ni"><i class="fas fa-gas-pump"></i> Combustible</button>
+<button class="ni" onclick="navTo(this,'drivers')"><i class="fas fa-truck-moving"></i> Vehículos</button>
+<button class="ni" onclick="navTo(this,'drivers')"><i class="fas fa-id-card"></i> Conductores</button>
+<button class="ni" onclick="navTo(this,'breakdown')"><i class="fas fa-gas-pump"></i> Combustible</button>
 <div class="nl">RRHH</div>
-<button class="ni"><i class="fas fa-people-group"></i> Personal</button>
+<button class="ni" onclick="navTo(this,'funnel')"><i class="fas fa-people-group"></i> Personal</button>
 </nav>
 <div class="sf"><div class="uc"><div class="av">OV</div><div><div class="un">Oscar Vásquez</div><div class="ur">Gestión</div></div></div></div>
 </aside>
@@ -171,7 +171,7 @@ tbody tr:hover{background:rgba(0,122,255,.02)}
 </div>
 
 <!-- Flow -->
-<div class="fl">
+<div class="fl" id="flowRow">
 <div class="fs"><div class="fi2">🚢</div><div class="ft2">Puerto</div><div class="fn2" style="color:var(--ac)">396</div><div class="fx2">En ruta</div></div>
 <div class="fs"><div class="fi2">📥</div><div class="ft2">Gate IN</div><div class="fn2" style="color:var(--gn)">1,479</div><div class="fx2">Recibidos</div></div>
 <div class="fs"><div class="fi2">🏗️</div><div class="ft2">Patio</div><div class="fn2" style="color:var(--or)">1,498</div><div class="fx2">Almacenados</div></div>
@@ -180,7 +180,7 @@ tbody tr:hover{background:rgba(0,122,255,.02)}
 </div>
 
 <!-- Charts row 1 -->
-<div class="rw r3">
+<div class="rw r3" id="sec-gps">
 <div class="c">
     <div class="ch"><div class="ch-l"><div class="ct">Revenue · Costo · Margen</div><div class="cs">Mensual 2026</div></div>
     <div class="ch-r"><button class="ch-toggle on" onclick="toggleMetric(this,'rev')">Revenue</button><button class="ch-toggle on" onclick="toggleMetric(this,'cost')">Costo</button><button class="ch-toggle on" onclick="toggleMetric(this,'margin')">Margen</button></div></div>
@@ -194,7 +194,7 @@ tbody tr:hover{background:rgba(0,122,255,.02)}
 </div>
 
 <!-- Charts row 2 -->
-<div class="rw r4">
+<div class="rw r4" id="sec-clients">
 <div class="c">
     <div class="ch"><div class="ch-l"><div class="ct">Mix operación</div><div class="cs">Click para filtrar</div></div>
     <div class="ch-r"><button class="ch-toggle on" onclick="toggleMetric(this,'mixVol')">Volumen</button><button class="ch-toggle" onclick="toggleMetric(this,'mixRev')">Revenue</button></div></div>
@@ -213,14 +213,14 @@ tbody tr:hover{background:rgba(0,122,255,.02)}
 </div>
 
 <!-- Charts row 3 -->
-<div class="rw r4">
-<div class="c"><div class="ch"><div class="ch-l"><div class="ct">Composición revenue</div></div></div><div class="cx" id="chBreak"></div></div>
+<div class="rw r4" id="sec-breakdown">
+<div class="c" id="sec-breakdown"><div class="ch"><div class="ch-l"><div class="ct">Composición revenue</div></div></div><div class="cx" id="chBreak"></div></div>
 <div class="c"><div class="ch"><div class="ch-l"><div class="ct">Fletes por semana</div><div class="cs">IMP 🟡 EXP 🔵 Otros 🟢</div></div></div><div class="cx" id="chWk"></div></div>
 <div class="c"><div class="ch"><div class="ch-l"><div class="ct">Funnel</div></div></div><div class="cx" id="chFun"></div></div>
 </div>
 
 <!-- Table -->
-<div class="c" style="animation-delay:.2s">
+<div class="c" style="animation-delay:.2s" id="sec-table">
 <div class="th"><div class="ct"><i class="fas fa-table" style="color:var(--ac);margin-right:3px;font-size:9px"></i>Fletes</div>
 <div style="display:flex;gap:4px"><div class="sx"><i class="fas fa-search"></i><input placeholder="Buscar..." id="sfI" oninput="filterTable()"></div>
 <button class="bt btg" onclick="exportPDF()"><i class="fas fa-file-pdf"></i> Exportar</button></div></div>
@@ -237,6 +237,16 @@ tbody tr:hover{background:rgba(0,122,255,.02)}
 const D=DATA,TF='Montserrat',TS={fontSize:6.5,fontFamily:TF};
 const now=new Date();
 document.getElementById('dt').textContent=now.toLocaleDateString('es-CL',{day:'numeric',month:'short'});
+
+// ===== SIDEBAR NAVIGATION =====
+const secMap={dashboard:'pg',gps:'sec-gps',table:'sec-table',flow:'flowRow',clients:'sec-clients',drivers:'sec-clients',breakdown:'sec-breakdown',funnel:'sec-breakdown'};
+function navTo(btn,sec){
+    document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+    btn.classList.add('on');
+    const target=document.getElementById(secMap[sec]||'pg');
+    if(target){target.scrollIntoView({behavior:'smooth',block:'start'})}
+    if(sec==='gps'&&map)setTimeout(()=>map.invalidateSize(),300);
+}
 
 // ===== FILTER STATE =====
 const F={type:'all',month:0,driver:'all'};
@@ -456,9 +466,15 @@ L.marker([-33.5485,-70.6965],{icon:L.divIcon({className:'',html:'<div style="bac
 const cl=u.sp>5?'#30d158':u.sp>0?'#ff9500':u.on?'#8e8e93':'#ff453a';
 L.marker([u.lt,u.ln],{opacity:u.on?1:.4,icon:L.divIcon({className:'',html:`<div style="display:flex;align-items:center;gap:2px"><div style="width:5px;height:5px;border-radius:50%;background:${cl}"></div><div class="truck-label">${u.p}${u.sp>0?' '+u.sp:''}</div></div>`,iconSize:[90,10],iconAnchor:[2,5]})}).addTo(map)});
 
-// INIT
-window.addEventListener('resize',()=>{Object.values(CH).forEach(c=>c&&c.resize());map.invalidateSize()});
-render();
+// INIT — wait for all libs to load
+function boot(){
+    if(typeof echarts==='undefined'||typeof L==='undefined'){setTimeout(boot,200);return}
+    render();
+    window.addEventListener('resize',()=>{Object.values(CH).forEach(c=>c&&c.resize());if(map)map.invalidateSize()});
+    console.log('Todocontenedor BI loaded. Charts:',Object.keys(CH).length);
+}
+if(document.readyState==='complete')boot();
+else window.addEventListener('load',boot);
 </script>
 </body>
 </html>
