@@ -162,13 +162,26 @@ tbody tr:last-child td{border-bottom:none}
                 <div class="mh">
                     <div><div class="ct"><i class="fas fa-satellite-dish" style="color:var(--ac);margin-right:5px"></i>Flota en tiempo real — GPS Tracking</div><div class="cs">12 camiones en ruta · 20 camiones total · 23 ramplas</div></div>
                     <div class="ms">
-                        <div><div class="mn2" style="color:var(--gn)">12</div><div class="ml">En ruta</div></div>
-                        <div><div class="mn2" style="color:var(--or)">6</div><div class="ml">Depósito</div></div>
+                        <div><div class="mn2" style="color:var(--gn)">9</div><div class="ml">En movimiento</div></div>
+                        <div><div class="mn2" style="color:var(--or)">48</div><div class="ml">Depósito</div></div>
                         <div><div class="mn2" style="color:var(--rd)">2</div><div class="ml">Taller</div></div>
+                        <div><div class="mn2">61</div><div class="ml">Total GPS</div></div>
                     </div>
                     <a href="https://hosting.wialon.com" target="_blank" class="bt bg"><i class="fas fa-external-link-alt"></i> Wialon</a>
                 </div>
                 <div id="map"></div>
+            </div>
+        </div>
+        <!-- GPS Legend -->
+        <div class="cd" style="animation-delay:.24s;margin-bottom:16px;padding:14px 18px">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+                <div class="ct" style="font-size:12px"><i class="fas fa-info-circle" style="color:var(--ac);margin-right:4px"></i>GPS en vivo — Wialon API · 61 dispositivos conectados</div>
+                <div style="display:flex;gap:16px;font-size:10px;font-weight:600">
+                    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#34c759;margin-right:4px"></span>En movimiento (9)</span>
+                    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff9f0a;margin-right:4px"></span>Detenido en ruta (4)</span>
+                    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#86868b;margin-right:4px"></span>En depósito (48)</span>
+                </div>
+                <button class="bt bg" onclick="refreshGPS()"><i class="fas fa-sync"></i> Refrescar GPS</button>
             </div>
         </div>
 
@@ -233,20 +246,40 @@ L.marker(depot,{icon:L.divIcon({className:'',html:'<div style="background:var(--
     L.marker([p[0],p[1]],{icon:L.divIcon({className:'',html:`<div style="background:rgba(175,82,222,.9);color:#fff;padding:2px 7px;border-radius:5px;font-size:8px;font-weight:600;font-family:Montserrat;white-space:nowrap">${p[3]} ${p[2]}</div>`,iconSize:[120,18],iconAnchor:[60,9]})}).addTo(map);
 });
 
-// Trucks
+// REAL GPS DATA — Wialon API (61 units)
 const trucks=[
-{p:'CHRY68',c:'Rafael Granadillo',cg:'MRSU9798135→Nestlé',lt:-33.387,ln:-70.588,sp:45},
-{p:'CZDK88',c:'Felipe Muñoz',cg:'HLXU8550601→Agunsa',lt:-33.421,ln:-70.612,sp:62},
-{p:'DDFG85',c:'Andres Trapp',cg:'FANU1012337→Vanadium',lt:-33.355,ln:-70.701,sp:38},
-{p:'FGSG67',c:'Luis Romero',cg:'CAAU4687363→Porteña',lt:-33.395,ln:-70.730,sp:55},
-{p:'FZGD89',c:'Carlos Peña',cg:'CMAU9878408→TPS',lt:-33.195,ln:-71.110,sp:72},
-{p:'GWFG23',c:'Jorge Silva',cg:'MSNU7284423→Nestlé',lt:-33.458,ln:-70.592,sp:28},
-{p:'HZRX63',c:'Pedro González',cg:'GCXU8018668→DYC',lt:-33.520,ln:-70.590,sp:50},
-{p:'KXSP22',c:'Diego Castro',cg:'MRKU6187905→Contopsa',lt:-33.410,ln:-70.670,sp:42},
-{p:'STJB66',c:'Manuel Reyes',cg:'TCLU7891234→STI',lt:-33.480,ln:-71.050,sp:65},
-{p:'WX1565',c:'Roberto Díaz',cg:'Vacío→Zeal',lt:-33.370,ln:-70.695,sp:35},
-{p:'CFZH28',c:'Héctor Parra',cg:'SEGU4456789→Renca',lt:-33.345,ln:-70.720,sp:48},
-{p:'DWVZ56',c:'Esteban Sandoval',cg:'MRSU8215296→Depósito',lt:-33.405,ln:-70.715,sp:22},
+{p:'JZGX59',c:'Rafael Granadillo',cg:'MAN Camión',lt:-33.5484,ln:-70.6963,sp:0},
+{p:'JFBZ97',c:'Felipe Muñoz',cg:'MAN Camión',lt:-33.5480,ln:-70.6966,sp:0},
+{p:'JGZC44',c:'Luis Romero',cg:'MAN Camión',lt:-33.5479,ln:-70.6966,sp:0},
+{p:'JYPW85',c:'Diego Zarazola',cg:'Scania Camión',lt:-33.5482,ln:-70.6961,sp:0},
+{p:'JXZX18',c:'Andres Trapp',cg:'Scania Camión',lt:-33.5481,ln:-70.6967,sp:0},
+{p:'KFLW91',c:'Esteban Sandoval',cg:'Scania Camión',lt:-33.3307,ln:-70.7299,sp:0},
+{p:'JZKB11',c:'Alexis Opazo',cg:'Scania Camión',lt:-33.6102,ln:-71.6231,sp:0},
+{p:'KXSP51',c:'Juan Leiva',cg:'MAN Camión',lt:-33.5482,ln:-70.6967,sp:0},
+{p:'KXSP52',c:'Pablo González',cg:'MAN Camión',lt:-33.5486,ln:-70.6963,sp:0},
+{p:'FZTG61',c:'Remberto López',cg:'Scania Camión',lt:-33.5480,ln:-70.6966,sp:0},
+{p:'GZXH46',c:'Disponible',cg:'Scania Camión',lt:-33.5484,ln:-70.6966,sp:0},
+{p:'FSWH54',c:'Sin conductor',cg:'Camión',lt:-33.5481,ln:-70.6964,sp:0},
+{p:'JXZL21',c:'Taller',cg:'MAN Camión',lt:-33.5490,ln:-70.6969,sp:0},
+{p:'KXSP22',c:'Taller',cg:'MAN Camión',lt:-33.2791,ln:-70.7372,sp:0},
+{p:'STJB66',c:'',cg:'Eléctrico',lt:-33.4918,ln:-70.6713,sp:0},
+{p:'TPJZ45',c:'Escolta',cg:'Mitsubishi',lt:-33.5490,ln:-70.6970,sp:4},
+{p:'JJXP47',c:'Víctor González',cg:'MAN Camión',lt:-33.6095,ln:-71.6231,sp:10},
+{p:'JYPW75',c:'Stefano Brignardello',cg:'Camión',lt:-33.6104,ln:-71.6230,sp:0},
+{p:'PXRG85',c:'Rafael',cg:'GPS A18',lt:-33.5425,ln:-70.6936,sp:10},
+{p:'JL6948',c:'Felipe',cg:'Chasis 2 ejes 40"',lt:-33.0695,ln:-71.6326,sp:8},
+{p:'JJ7546',c:'Arriendo DYC',cg:'Chasis 2 ejes 40"',lt:-33.5484,ln:-70.6962,sp:0},
+{p:'JF5917',c:'',cg:'Chasis 3 ejes 40"',lt:-33.3277,ln:-70.7239,sp:0},
+{p:'JG3005',c:'',cg:'Chasis 3 ejes 40"',lt:-33.3308,ln:-70.7299,sp:0},
+{p:'JN6996',c:'',cg:'Chasis 3 ejes 40"',lt:-33.5483,ln:-70.6963,sp:0},
+{p:'PXPG16',c:'',cg:'Chasis Pravas NW',lt:-33.5483,ln:-70.6962,sp:0},
+{p:'PXPG17',c:'',cg:'Chasis Pravas NW',lt:-33.5480,ln:-70.6964,sp:0},
+{p:'PXPG18',c:'',cg:'Chasis Pravas NW',lt:-33.6106,ln:-71.6230,sp:7},
+{p:'JJ8205',c:'',cg:'Rampla plana 40"',lt:-33.5486,ln:-70.6961,sp:0},
+{p:'JB1565',c:'',cg:'Rampla plana 40"',lt:-33.5480,ln:-70.6965,sp:0},
+{p:'GRJB40',c:'',cg:'Rampla plana 40"',lt:-33.6104,ln:-71.6233,sp:8},
+{p:'PXDP25',c:'',cg:'Rampla plana 40"',lt:-33.5486,ln:-70.6967,sp:1},
+{p:'HJPX98',c:'Disponible',cg:'Camión',lt:-33.5484,ln:-70.6963,sp:0},
 ];
 
 const markers=[];
@@ -326,6 +359,38 @@ document.getElementById('tbf').innerHTML=d.map(f=>`<tr>
 </tr>`).join('')}
 rf(fls);
 function ff(){const q=document.getElementById('sf2').value.toLowerCase();rf(fls.filter(f=>(f.n+'').includes(q)||f.cl.toLowerCase().includes(q)||f.cd.toLowerCase().includes(q)||f.co.toLowerCase().includes(q)))}
+
+// ===== WIALON LIVE REFRESH =====
+const WIALON_TOKEN='fd3eaf62ed4edfd7c20213454230cc2a203068B2126D6CFC72C8FB87D821F040A1601DB5';
+async function refreshGPS(){
+    try{
+        const login=await fetch(`https://hst-api.wialon.com/wialon/ajax.html?svc=token/login&params={"token":"${WIALON_TOKEN}"}`).then(r=>r.json());
+        if(!login.eid)return;
+        const data=await fetch(`https://hst-api.wialon.com/wialon/ajax.html?svc=core/search_items&params={"spec":{"itemsType":"avl_unit","propName":"*","propValueMask":"*","sortType":"sys_name"},"force":1,"flags":1025,"from":0,"to":0}&sid=${login.eid}`).then(r=>r.json());
+        if(!data.items)return;
+        const units=data.items.filter(u=>u.pos&&u.pos.y);
+        const moving=units.filter(u=>u.pos.s>0);
+        document.querySelector('.ms').innerHTML=`
+            <div><div class="mn2" style="color:var(--gn)">${moving.length}</div><div class="ml">En movimiento</div></div>
+            <div><div class="mn2" style="color:var(--or)">${units.length-moving.length}</div><div class="ml">Detenidos</div></div>
+            <div><div class="mn2">${units.length}</div><div class="ml">Total GPS</div></div>`;
+        markers.forEach(({m})=>map.removeLayer(m));
+        markers.length=0;
+        units.forEach(u=>{
+            const s=u.pos.s,cl=s>5?'#34c759':s>0?'#ff9f0a':'#86868b';
+            const st=s>0?s+'km/h':'';
+            const nm=u.nm.length>30?u.nm.substring(0,28)+'…':u.nm;
+            const m2=L.marker([u.pos.y,u.pos.x],{icon:L.divIcon({className:'',html:`<div style="display:flex;align-items:center;gap:3px"><div style="width:7px;height:7px;border-radius:50%;background:${cl};box-shadow:0 0 5px ${cl}80"></div><div class="truck-label">${nm}${st?' · '+st:''}</div></div>`,iconSize:[180,16],iconAnchor:[3,8]})}).addTo(map);
+            m2.bindPopup(`<div style="min-width:200px"><div style="font-weight:800;font-size:13px;margin-bottom:6px">${u.nm}</div><div style="font-size:10px;color:${cl};font-weight:600;margin-bottom:4px">${s>0?'En movimiento · '+s+' km/h':'Detenido'}</div><div style="font-size:10px;color:#86868b">Lat: ${u.pos.y.toFixed(5)} · Lng: ${u.pos.x.toFixed(5)}</div><div style="font-size:9px;color:#86868b;margin-top:4px">Última señal: ${new Date(u.pos.t*1000).toLocaleString('es-CL')}</div></div>`);
+            markers.push({m:m2,t:{lt:u.pos.y,ln:u.pos.x,sp:s}});
+        });
+        console.log(`GPS actualizado: ${units.length} unidades, ${moving.length} en movimiento`);
+    }catch(e){console.error('Error GPS:',e)}
+}
+// Auto-refresh every 60 seconds
+setInterval(refreshGPS,60000);
+// Initial load from Wialon
+setTimeout(refreshGPS,2000);
 </script>
 </body>
 </html>
